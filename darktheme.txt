@@ -105,3 +105,9 @@ story.kakao.com#$#.story_inflow .comment .count_group a strong {color: #dcddde !
 story.kakao.com#$#.write .upload  {background: #474954 !important; }
 story.kakao.com#$#.write .upload{border:1px dashed #36373b!important; }
 story.kakao.com#$#.story_inflow .comment .list>li {border-top: 0px !important; }
+story.kakao.com#$#.section_bundle .action_graph .link_action {color: #dcddde !important; }
+story.kakao.com#$#.section_bundle .action_graph .txt_action {color: #dcddde !important; }
+story.kakao.com#$#.section_bundle .action_graph {border-bottom: 2px solid #36373b !important; }
+story.kakao.com#$#.section_bundle .btn_more {background: #40444b !important; }
+story.kakao.com#$#.section_bundle .btn_more  {color: #dcddde !important; }
+story.kakao.com#$#.section_bundle .btn_more {border-top: 0px !important; }
