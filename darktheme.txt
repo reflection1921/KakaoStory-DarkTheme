@@ -168,4 +168,30 @@ story.kakao.com#$#.fd_cont .scrap_wrap .link_scrap .txt_scrap {color: #dcddde !i
 story.kakao.com#$#.newnoti_layer .list_newnoti .noti_on, .newnoti_layer .list_newnoti li:focus, .newnoti_layer .list_newnoti li:hover {background-color:#38383a!important;}
 story.kakao.com#$#.util_menu .menu_util .logout_menu .link_menu {border-top: 1px solid #262729 !important; }
 story.kakao.com#$#.fd_cont .place .empty_txt, .fd_cont .place a {color: #dcddde!important; }
+story.kakao.com#$#.write .scrap .preview .inner_scrap .tit_scrap {color: #dcddde!important; }
+story.kakao.com#$#.write .scrap .preview.scrap_link .desc_scrap {color: #dcddde!important; }
 story.kakao.com#$#.story_widgets .keyword_widgets .link_keyword {color: #dcddde!important; }
+story.kakao.com#$#.feed .btn_feedmore {color:#dcddde !important}
+story.kakao.com#$#.feed .btn_feedmore {background-color: #474954 !important; }
+story.kakao.com#$#.feed .btn_feedmore {border-bottom: 0px !important; }
+story.kakao.com#$#.dim_ly .message .box_writing {background: #474954 !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .bn_group {background: #474954 !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .tit_message {border-bottom: 1px solid #474954 !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_write {border-top: #474954 !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_write {border-bottom: #474954 !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .tit_message {color: #dcddde !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_from .friends_choice .ly_set {background: #18191c !important;}
+story.kakao.com#$#.dim_ly .message .box_writing .box_from .friends_choice .ly_set {border: 0px !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_from .friends_choice .ly_set .link_modify {color: #dcddde!important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_from .friends_choice .ly_set .link_modify:focus, .dim_ly .message .box_writing .box_from .friends_choice .ly_set .link_modify:hover {background: #38383a !important; }
+story.kakao.com#$#.music_collection .link_music {color: #dcddde !important; }
+story.kakao.com#$#.music_collection .txt_artist {color: #dcddde !important; }
+story.kakao.com#$#.music_collection .wrap_music {background: #474954 !important; }
+story.kakao.com#$#.feed_mystory {background: #474954 !important; }
+story.kakao.com#$#.feed_mystory .tit_wrap .tit_feed {color: #dcddde !important; }
+story.kakao.ocm#$#.wrap_itemstory .item_story .link_story .txt_story {color: #dcddde !important; }
+story.kakao.com#$#.wrap_itemstory {border-bottom: 1px solid #36373b !important; }
+story.kakao.com#$#.wrap_itemstory {border-top: 3px solid #36373b !important; }
+story.kakao.com#$#.wrap_itemstory .item_story .link_story .txt_story {color: #dcddde !important; }
+story.kakao.com#$#.wrap_itemstory .item_story {border-bottom: 1px solid #36373b !important; }
+story.kakao.com#$#.wrap_itemstory .item_story {border-right: 1px solid #36373b !important; }
