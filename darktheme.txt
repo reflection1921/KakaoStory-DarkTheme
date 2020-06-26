@@ -195,3 +195,60 @@ story.kakao.com#$#.wrap_itemstory {border-top: 3px solid #36373b !important; }
 story.kakao.com#$#.wrap_itemstory .item_story .link_story .txt_story {color: #dcddde !important; }
 story.kakao.com#$#.wrap_itemstory .item_story {border-bottom: 1px solid #36373b !important; }
 story.kakao.com#$#.wrap_itemstory .item_story {border-right: 1px solid #36373b !important; }
+story.kakao.com#$#.cover_cont .cover_layer .link_layer {color: #dcddde !important; }
+story.kakao.com#$#.cover_cont .cover_layer {background-color: #18191c !important; }
+story.kakao.com#$#.cover_cont .cover_layer {border: 0px !important; }
+story.kakao.com#$#.cover_cont .cover_layer .file_layer:hover .link_layer, .cover_cont .cover_layer .link_layer:hover, .cover_cont .cover_layer .menu_li.on .link_layer, .cover_cont .cover_layer .menu_li:hover .link_layer {background-color: #38383a!important; }
+story.kakao.com#$#.feed_mystory .tool_pub .btn_tool {color: #dcddde !important; }
+story.kakao.com#$#.feed_mystory .open_layer .lab_rdo {color: #dcddde !important; }
+story.kakao.com#$#.feed_mystory .ly {border: 0px !important; }
+story.kakao.com#$#.feed_mystory .ly {background-color: #18191c !important; }
+story.kakao.com#$#.story_widgets .list_calendar .none .btn_month {color: #222222 !important; }
+story.kakao.com#$#.story_widgets .list_calendar .btn_month {color: #dcddde !important; }
+story.kakao.com#$#.story_widgets .calendar_top .tit_year {color: #dcddde !important; }
+story.kakao.com#$#.story_widgets .calendar_top .tit_year {border-bottom: 0px !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev.on .ico_ks2 {background: none !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev.on .ico_ks2 {width: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev.on .ico_ks2 {height: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev.on .ico_ks2 {border-top: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev.on .ico_ks2 {border-bottom: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev.on .ico_ks2 {border-right: 8.66px solid #dcddde !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev .ico_ks2 {background: none !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev .ico_ks2 {width: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev .ico_ks2 {height: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev .ico_ks2 {border-top: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev .ico_ks2 {border-bottom: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_prev .ico_ks2 {border-right: 8.66px solid black !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next.on .ico_ks2 {background: none !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next.on .ico_ks2 {width: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next.on .ico_ks2 {height: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next.on .ico_ks2 {border-top: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next.on .ico_ks2 {border-bottom: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next.on .ico_ks2 {border-left: 8.66px solid #dcddde !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next .ico_ks2 {background: none !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next .ico_ks2 {width: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next .ico_ks2 {height: 0 !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next .ico_ks2 {border-top: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next .ico_ks2 {border-bottom: 5px solid transparent !important; }
+story.kakao.com#$#.story_widgets .calendar_top .btn_next .ico_ks2 {border-left: 8.66px solid black !important; }
+story.kakao.com#$#.date_collection .box_cell {border-bottom: 0px !important; }
+story.kakao.com#$#.date_collection .box_cell {background-color: #474954 !important; }
+story.kakao.com#$#.date_collection .box_cell .btn_more {color: #dcddde !important;}
+story.kakao.com#$#.date_collection .box_cell .btn_more:hover {color: #dcddde !important; }
+story.kakao.com#$#.date_collection .box_cell .link_txt .txt_date {color: #72767d !important; }
+story.kakao.com#$#.date_collection .box_cell .link_txt .txt_date {opacity: 1 !important; }
+story.kakao.com#$#.date_collection .box_cell .link_txt {border: 1px solid #36373b !important; }
+story.kakao.com#$#.date_collection .box_cell .link_txt {color: #dcddde !important; }
+story.kakao.com#$#.date_collection .box_cell .top_wrap .txt_year {color: #dcddde !important; }
+story.kakao.com#$#.date_collection .box_cell .top_wrap .txt_month {color: #dcddde !important; }
+story.kakao.com#$#.date_collection .box_cell .total_story {color: #dcddde !important; }
+story.kakao.com#$#.date_collection .box_cell .top_wrap:after {background-color: #36373b !important; }
+story.kakao.com#$#.friend_layer ul .active .link_fr, .friend_layer ul li .link_fr:focus, .friend_layer ul li .link_fr:hover {background-color: #38383a !important;}
+story.kakao.com#$#.friend_layer ul li .txt {color: #dcddde !important; }
+story.kakao.com#$#.write .with_friend .tag {background-color: #40444b !important; }
+story.kakao.com#$#.write .with_friend .tag {color: #dcddde !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_from .friends_choice .tag {color: #dcddde !important; }
+story.kakao.com#$#.dim_ly .message .box_writing .box_from .friends_choice .tag {background-color: #40444b !important; }
+story.kakao.com#$#.dim_ly .message .box_media {background: #474954 !important; }
+story.kakao.com#$#.write .section .open_layer li:hover {background-color: #38383a !important; }
+story.kakao.com#$#.section .other_layer .link_menu:focus, .section .other_layer .link_menu:hover {background: #38383a !important; }
