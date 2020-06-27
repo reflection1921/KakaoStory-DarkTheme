@@ -8,12 +8,12 @@ story.kakao.com#$#.snb_story { border-left: 0px!important; }
 story.kakao.com#$#.story_inflow {background: #474954!important; }
 story.kakao.com#$#body { background: #36393f!important; }
 story.kakao.com#$#.snb_profile .wrap_thumb .link_name { color: #cccccc!important; }
-story.kakao.com#$#.write .inp_contents .editable { background: #474954!important; }
 story.kakao.com#$#.write .inp_contents .editable { color: #dcddde!important; }
 story.kakao.com#$#.write .inp_contents .tit_label { color: #dcddde!important; }
 story.kakao.com#$#.section { background: #474954!important; }
 story.kakao.com#$#.write .inp_contents .editable_clone { background: #474954!important; }
-story.kakao.com#$#.write .inp_contents .editable_clone .profile { background: #2f3136!important; }
+story.kakao.com#$#.write .inp_contents .editable_clone .hashtag {background: #7289da!important; }
+story.kakao.com#$#.write .inp_contents .editable_clone .profile {background: #2c313f !important; }
 story.kakao.com#$#.write .inp_footer .bn_icon .bn_open { border: 0px!important; }
 story.kakao.com#$#.write .inp_footer .bn_icon .bn_open { background: #3c4047!important; }
 story.kakao.com#$#.btn_com.btn_wh { background: #3c4047!important; }
@@ -74,6 +74,9 @@ story.kakao.com#$#.cate_channel {background-color: #36393f!important; }
 story.kakao.com#$#.cate_channel {border-top: 0px!important; }
 story.kakao.com#$#.img_profile {border-radius: 60px!important; }
 story.kakao.com#$#.cate_channel .link_channel {color: #8e9297!important; }
+story.kakao.com#$#.hash_layer .hash_info {color: #dcddde !important; }
+story.kakao.com#$#.hash_layer ul li a {color: #dcddde !important; }
+story.kakao.com#$#.hash_layer ul li.active, .hash_layer ul li:focus, .hash_layer ul li:hover {background: #38383a !important;}
 story.kakao.com#$#.list_cate .thumb_name {color: #8e9297!important; }
 story.kakao.com#$#.fd_cont .share_wrap {background: #40444b!important; }
 story.kakao.com#$#.fd_cont .scrap_image .link_imgthumb .line {border: 1px solid #36373b!important; }
@@ -276,3 +279,5 @@ story.kakao.com#$#.section.section_action .action_graph .link_action {color: #dc
 story.kakao.com#$#.section.section_action .action_graph {border-bottom:3px solid #36373b !important; }
 story.kakao.com#$#.add_top .btn_follow {color: #dcddde !important;}
 story.kakao.com#$#.add_top .btn_follow {background-color: #40444b !important; }
+story.kakao.com#$#.comment .more a {color: #dcddde !important; }
+story.kakao.com#$#.count_group a {color: #dcddde !important;}
