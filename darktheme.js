@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.1
+// @version      0.2
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
+// @downloadURL  https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.js
+// @updateURL    https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.js
 // @grant        GM_addStyle
 // ==/UserScript==
 
