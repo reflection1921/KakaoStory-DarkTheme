@@ -36,6 +36,7 @@ story.kakao.com#$#.time_cont .link_share {border-top: 1px solid #36373b!importan
 story.kakao.com#$#.time_cont .txt_date .link_txt {color: #dcddde!important; }
 story.kakao.com#$#.section_time .tit_time {color: #dcddde!important; }
 story.kakao.com#$#.comment .comt_write .inp_write{background: #40444b!important; }
+story.kakao.com#$#.comment .comt_write .inp_write .txt_copy .name {background: #2c313f !important; }
 story.kakao.com#$#.comment .comt_write .inp_write{border: 0px!important; }
 story.kakao.com#$#.fd_cont .scrap_wrap {border: 1px solid #36373b!important; }
 story.kakao.com#$#.time_cont .time_head {border: 1px solid #36373b!important; }
