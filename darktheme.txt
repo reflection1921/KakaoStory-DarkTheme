@@ -282,3 +282,48 @@ story.kakao.com#$#.add_top .btn_follow {color: #dcddde !important;}
 story.kakao.com#$#.add_top .btn_follow {background-color: #40444b !important; }
 story.kakao.com#$#.comment .more a {color: #dcddde !important; }
 story.kakao.com#$#.count_group a {color: #dcddde !important;}
+story.kakao.com#$#.account_modify .tit_modify {color: #ffffff !important; }
+story.kakao.com#$#.account_modify .subtit_modify {color: #dcddde !important; }
+story.kakao.com#$#.account_modify .subtit_modify {border-top: 2px solid #40444b !important;}
+story.kakao.com#$#.account_modify .list_account dt {color: #73767b !important; }
+story.kakao.com#$#.account_modify .withdrawal_wrap {border-top: 0px solid #40444b !important;}
+story.kakao.com#$#.account_modify .list_account dd {border-top: 1px solid #40444b !important;}
+story.kakao.com#$#.account_modify .txt_id {color: #dcddde !important;}
+story.kakao.com#$#.account_modify .agree_inp {color: #dcddde !important; }
+story.kakao.com#$#.account_modify .info_agree {color: #dcddde !important; }
+story.kakao.com#$#.account_modify .radio_inp {color: #dcddde !important; }
+story.kakao.com#$#.write .scrap_newssc .tit_newssc {color: #dcddde !important; }
+story.kakao.com#$#.newnoti_layer .btn_group {border-left: #38383a !important; }
+story.kakao.com#$#.__tablet__ .snb_profile .wrap_thumb, .desktop_s .snb_profile .wrap_thumb {border-bottom: 1px solid #40444b !important; }
+story.kakao.com#$#.__tablet__ .util_menu, .desktop_s .util_menu {border-bottom: 1px solid #40444b !important; }
+story.kakao.com#$#.__tablet__ .mystory_menu, .desktop_s .mystory_menu {border-bottom: 1px solid #40444b !important; }
+story.kakao.com#$#.__tablet__ .tab_friend li, .desktop_s .tab_friend li {border-bottom: 1px solid #40444b !important; }
+story.kakao.com#$#.story_widgets .subtit_info {color: #dcddde !important; }
+story.kakao.com#$#::selection {background-color: #f26a41 !important; }
+story.kakao.com#$#.friend_collection .ly {background-color: #18191c !important; }
+story.kakao.com#$#.friend_collection .ly {border: 0px !important; }
+story.kakao.com#$#.friend_collection .tit_collection {color: #dcddde !important; }
+story.kakao.com#$#.frinfo_wrap .list_frinfo .desc_friend .tit_fr .link_txt {color: #dcddde !important; }
+story.kakao.com#$#.friend_collection .box_searchbar .tf_keyword {border: 1px solid #202225 !important; }
+story.kakao.com#$#.friend_collection .open_layer .lab_rdo {color: #dcddde !important; }
+story.kakao.com#$#.friend_collection .other_layer .link_menu {color: #dcddde !important; }
+story.kakao.com#$#.friend_collection .other_layer .link_menu:hover{background-color: #38383a !important; }
+story.kakao.com#$#.friend_collection {background-color: #474954 !important; }
+story.kakao.com#$#.friend_collection {border-bottom: 0px !important; }
+story.kakao.com#$#.btn_com.ing {background: #40444b !important; }
+story.kakao.com#$#.friend_collection .tab_story .on .link_menu {border-bottom: 2px solid #36373b !important; }
+story.kakao.com#$#.friend_collection .tab_story .on .link_menu {color: #ffffff !important; }
+story.kakao.com#$#.friend_collection .tab_story .link_menu:hover {border-bottom: 2px solid #36373b !important; }
+story.kakao.com#$#.friend_collection .tab_story .link_menu {color: #dcddde !important;}
+story.kakao.com#$#.friend_collection .tab_story {background: none !important; }
+story.kakao.com#$#.friend_collection .wrap_frinfo_v2 .link_toolmodify {color: #dcddde !important; }
+story.kakao.com#$#.profile_collection {background-color: #474954 !important; }
+story.kakao.com#$#.profile_collection .tit_collection {color: #dcddde !important; }
+story.kakao.com#$#.profile_collection .list_profile .txt_info {color: #dcddde !important; }
+story.kakao.com#$#.profile_collection .list_profile dd {border-bottom: 1px solid #36373b !important; }
+story.kakao.com#$#.profile_collection .list_profile .lst dd {border-bottom: 0px !important; }
+story.kakao.com#$#.profile_collection .add_info .btn_addinfo {color: #b3b3b3 !important; }
+story.kakao.com#$#.mystory_menu .layer_mystory {background-color: #2f3136 !important; }
+story.kakao.com#$#.menu_mystory .link_logout, .menu_mystory .tit_mystory {color: #ffffff !important;}
+story.kakao.com#$#.menu_mystory .link_menu {color: #dcddde !important; }
+story.kakao.com#$#.profile_collection {border-bottom: 0px !important; }
