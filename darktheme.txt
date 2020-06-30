@@ -330,3 +330,4 @@ story.kakao.com#$#.profile_collection {border-bottom: 0px !important; }
 story.kakao.com#$#.section_birth .tit_birth {color: #ffffff !important; }
 story.kakao.com#$#.section_birth .link_name {color: #dcddde !important; }
 story.kakao.com#$#.section_birth .box_birth {border: 1px solid #36373b !important; }
+story.kakao.com#$#.feed .loading_wrap {visibility: hidden !important; }
