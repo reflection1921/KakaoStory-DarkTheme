@@ -331,3 +331,10 @@ story.kakao.com#$#.section_birth .tit_birth {color: #ffffff !important; }
 story.kakao.com#$#.section_birth .link_name {color: #dcddde !important; }
 story.kakao.com#$#.section_birth .box_birth {border: 1px solid #36373b !important; }
 story.kakao.com#$#.feed .loading_wrap {visibility: hidden !important; }
+story.kakao.com#$#.comment .list>li .txt .link_url {color: #00b5ff !important; }
+story.kakao.com#$#.section.disseminate .pf_tit {color: #dcddde !important; }
+story.kakao.com#$#.section.disseminate .list_news li .box_news {background: #40444b !important; }
+story.kakao.com#$#.section.disseminate .list_news li .box_news .desc_news .link_news .tit_news {color: #dcddde !important; }
+story.kakao.com#$#.search_layer .list_search .info_user .txt_name {color: #dcddde !important; }
+story.kakao.com#$#.section.disseminate .list_news li .box_news {border: 1px solid #36373b !important; }
+story.kakao.com#$#.section.disseminate .pf_tit .pf_name {color: #dcddde !important; }
