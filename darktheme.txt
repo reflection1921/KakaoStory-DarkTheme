@@ -340,3 +340,12 @@ story.kakao.com#$#.section.disseminate .list_news li .box_news {border: 1px soli
 story.kakao.com#$#.section.disseminate .pf_tit .pf_name {color: #dcddde !important; }
 story.kakao.com#$#.profile_collection .modify_info .profile_inp .tf_profile {background-color: #40444b !important; }
 story.kakao.com#$#.profile_collection .modify_info .profile_inp .tf_profile {border: 0px !important; }
+story.kakao.com#$#.hash .link_hash {color: #cccccc !important; }
+story.kakao.com#$#.wrap_recomm .tit_recomm {color: #dcddde !important; }
+story.kakao.com#$#.hash .emph_tag {color: #dcddde !important; }
+story.kakao.com#$#.hash .inner_hash {border-bottom: 0px !important; }
+story.kakao.com#$#.hash .wrap_tag {border-bottom: 0px !important; }
+story.kakao.com#$#.wrap_recomm .img_wrap .txt_item {background-color: #474954 !important; }
+story.kakao.com#$#.wrap_recomm .img_wrap .link_txt {background-color: #474954 !important; }
+story.kakao.com#$#.wrap_recomm .img_wrap .link_txt {color: #dcddde !important; }
+story.kakao.com#$#.wrap_recomm .img_wrap .txt_date {color: #dcddde !important; }
