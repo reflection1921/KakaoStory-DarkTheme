@@ -338,3 +338,5 @@ story.kakao.com#$#.section.disseminate .list_news li .box_news .desc_news .link_
 story.kakao.com#$#.search_layer .list_search .info_user .txt_name {color: #dcddde !important; }
 story.kakao.com#$#.section.disseminate .list_news li .box_news {border: 1px solid #36373b !important; }
 story.kakao.com#$#.section.disseminate .pf_tit .pf_name {color: #dcddde !important; }
+story.kakao.com#$#.profile_collection .modify_info .profile_inp .tf_profile {background-color: #40444b !important; }
+story.kakao.com#$#.profile_collection .modify_info .profile_inp .tf_profile {border: 0px !important; }
