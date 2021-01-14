@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.4
+// @version      0.5
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -37,7 +37,7 @@ function replaceAll(str, searchStr, replaceStr) {
   return str.split(searchStr).join(replaceStr);
 }
 
-var _changeString = window.setInterval(changeString, 1);
+//var _changeString = window.setInterval(changeString, 1);
 
 function changeString() {
     replaceWordsByTagName('label', '우리끼리보기', '편한친구공개');
