@@ -374,3 +374,5 @@ story.kakao.com#$#.section.recommend .list_recommend2 li {1px solid #36373b !imp
 story.kakao.com#$#.story_layer .inner_story_layer {background-color: #36393f !important; }
 story.kakao.com#$#.story_layer .list_people .tit_userinfo {color: #dcddde !important; }
 story.kakao.com#$#.story_layer .list_people .link_people:focus, .story_layer .list_people .link_people:hover, .story_layer .list_people li.on .link_people {background-color: #474954 !important; }
+story.kakao.com#$#.story_inflow .btn_top_group .btn_com {background-color: #2f3136 !important; }
+story.kakao.com#$#.feed_relation .wrap_relation {background-color: #31363f !important; }
