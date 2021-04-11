@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.8
+// @version      0.9
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -72,7 +72,7 @@ function GM_setValue(key, value) {
 let currentPage = '';
 
 function addCustomFontSetting() {
-    document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML = '<strong class="subtit_modify">폰트설정</strong><dl class="list_account"><dt>폰트 설정</dt><dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontNoto" value="나눔고딕"> <label for="fontNoto">NotoSans</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontNanum" value="NotoSans"> <label for="fontNanum">나눔고딕</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontCustom" value="Custom"> <label for="fontCustom">사용자 설정</label></div></div></dd><dt>사용자 설정 폰트명</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: #40444b; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd><dt>사용자 설정 폰트<br>CSS URL</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_url" style="background-color: #40444b; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd><dt></dt><dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #f26a41 !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다.</p></div></dd></dl>' + document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML;
+    document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML = '<strong class="subtit_modify">카카오스토리 다크모드 설정</strong><dl class="list_account"><dt>폰트 설정</dt><dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontNoto" value="나눔고딕"> <label for="fontNoto">NotoSans</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontNanum" value="NotoSans"> <label for="fontNanum">나눔고딕</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontCustom" value="Custom"> <label for="fontCustom">사용자 설정</label></div></div></dd><dt>사용자 설정 폰트명</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd><dt>사용자 설정 폰트<br>CSS URL</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_url" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd><dt>테마 설정</dt><dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="ksDarkThemeWhite" value="White"> <label for="ksDarkThemeWhite">Light Mode</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="ksDarkThemeDark" value="Dark"> <label for="ksDarkThemeDark">Dark Mode</label></div></div></dd><dt></dt><dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #f26a41 !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 테마를 변경했다면 새로고침 해주셔야 합니다.</p></div></dd></dl>' + document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML;
     if (GM_getValue('ksDarkFontName', '') == "NotoSans") {
         document.getElementById("fontNanum").checked = true;
     } else if (GM_getValue('ksDarkFontName', '') == "나눔고딕") {
@@ -81,6 +81,11 @@ function addCustomFontSetting() {
         document.getElementById("fontCustom").checked = true;
     } else {
         document.getElementById("fontNoto").checked = true;
+    }
+    if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
+        document.getElementById("ksDarkThemeDark").checked = true;
+    } else {
+        document.getElementById("ksDarkThemeWhite").checked = true;
     }
     $('body').on('click', '#fontNanum', function() {
         GM_setValue('ksDarkFontName', 'NotoSans');
@@ -93,6 +98,12 @@ function addCustomFontSetting() {
     $('body').on('click', '#fontCustom', function() {
         GM_setValue('ksDarkFontName', 'Custom');
         GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: " + GM_getValue('ksDarkCustomFontName', '') + " !important;}" );
+    });
+    $('body').on('click', '#ksDarkThemeDark', function() {
+        GM_setValue('ksDarkThemeStyle', '#40444b');
+    });
+    $('body').on('click', '#ksDarkThemeWhite', function() {
+        GM_setValue('ksDarkThemeStyle', '#ffffff');
     });
     $('body').on('click', '#ksdarkApplyCustom', function() {
         GM_setValue('ksDarkCustomFontName', document.getElementById("ksdark_font_css_name").value);
@@ -107,7 +118,14 @@ function addCustomFontSetting() {
 }
 
 (function() {
-    loadFilter();
+
+    if (GM_getValue('ksDarkThemeStyle', '') == "") {
+        GM_setValue('ksDarkThemeStyle', '#40444b');
+    }
+
+    if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
+        loadFilter();
+    }
 
     if (GM_getValue('ksDarkCustomFontName', '') == "") {
         GM_setValue('ksDarkCustomFontName', 'Gaegu');
