@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.7
+// @version      0.8
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -37,41 +37,11 @@ function replaceAll(str, searchStr, replaceStr) {
   return str.split(searchStr).join(replaceStr);
 }
 
-//var _changeString = window.setInterval(changeString, 1);
-
 function changeString() {
     replaceWordsByTagName('label', '우리끼리보기', '편한친구공개');
     replaceWordsByClassName('tit_story', '우리끼리', '편한친구');
     replaceWordsByClassName('ico_bestfriend_m _permissionPartOfFriends', '우리끼리보기', '편한친구공개');
     setAttributeByClassName('_permissionPartOfFriends', 'data-tooltip', '편한친구공개');
-}
-
-function replaceFont() {
-//console.log("dd");
-if (GM_getValue('ksDarkFontName', '') == "NotoSans") {
-    GM_setValue('ksDarkFontName', '나눔고딕');
-    //NotoSans 폰트로 전환한다.
-    GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: 'Noto Sans KR' !important;}" );
-} else if (GM_getValue('ksDarkFontName', '') == "나눔고딕") {
-    GM_setValue('ksDarkFontName', 'NotoSans');
-    //나눔고딕 폰트로 전환한다.
-    GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '나눔고딕' !important;}" );
-} else {
-    GM_setValue('ksDarkFontName', '나눔고딕');
-    //NotoSans 폰트로 전환한다.
-    GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: 'Noto Sans KR' !important;}" );
-}
-}
-
-function addFontSetting() {
-//console.log(document.getElementsByClassName("menu_util"));
-//console.log(document.getElementsByClassName("menu_util"));
-var fontName = GM_getValue('ksDarkFontName', '');
-document.getElementsByClassName("menu_util")[0].innerHTML = '<li><a href="#" id="setFontOnDarkKS" class="link_menu _btnSettingAccount" data-kant-id="740">' + fontName + ' 전환</a></li>' + document.getElementsByClassName("menu_util")[0].innerHTML;
-$('body').on('click', '#setFontOnDarkKS', function() {
-    replaceFont();
-    document.getElementById("setFontOnDarkKS").innerText = GM_getValue('ksDarkFontName', '') + " 전환";
-});
 }
 
 function loadFilter() {
@@ -99,10 +69,54 @@ function GM_setValue(key, value) {
     return localStorage[key]=value;
 }
 
+let currentPage = '';
+
+function addCustomFontSetting() {
+    document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML = '<strong class="subtit_modify">폰트설정</strong><dl class="list_account"><dt>폰트 설정</dt><dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontNoto" value="나눔고딕"> <label for="fontNoto">NotoSans</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontNanum" value="NotoSans"> <label for="fontNanum">나눔고딕</label></div><div class="radio_inp"> <input type="radio" name="open_choice1" class="inp_radio _friendListExposure" id="fontCustom" value="Custom"> <label for="fontCustom">사용자 설정</label></div></div></dd><dt>사용자 설정 폰트명</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: #40444b; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd><dt>사용자 설정 폰트<br>CSS URL</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_url" style="background-color: #40444b; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd><dt></dt><dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #f26a41 !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다.</p></div></dd></dl>' + document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML;
+    if (GM_getValue('ksDarkFontName', '') == "NotoSans") {
+        document.getElementById("fontNanum").checked = true;
+    } else if (GM_getValue('ksDarkFontName', '') == "나눔고딕") {
+        document.getElementById("fontNoto").checked = true;
+    } else if (GM_getValue('ksDarkFontName', '') == "Custom") {
+        document.getElementById("fontCustom").checked = true;
+    } else {
+        document.getElementById("fontNoto").checked = true;
+    }
+    $('body').on('click', '#fontNanum', function() {
+        GM_setValue('ksDarkFontName', 'NotoSans');
+        GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '나눔고딕' !important;}" );
+    });
+    $('body').on('click', '#fontNoto', function() {
+        GM_setValue('ksDarkFontName', '나눔고딕');
+        GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: 'Noto Sans KR' !important;}" );
+    });
+    $('body').on('click', '#fontCustom', function() {
+        GM_setValue('ksDarkFontName', 'Custom');
+        GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: " + GM_getValue('ksDarkCustomFontName', '') + " !important;}" );
+    });
+    $('body').on('click', '#ksdarkApplyCustom', function() {
+        GM_setValue('ksDarkCustomFontName', document.getElementById("ksdark_font_css_name").value);
+        GM_setValue('ksDarkCustomFontCss', document.getElementById("ksdark_font_css_url").value);
+        GM_addStyle("@import url(" + GM_getValue('ksDarkCustomFontCss', '') + ")");
+        if (GM_getValue('ksDarkFontName', '') == "Custom") {
+            GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: " + GM_getValue('ksDarkCustomFontName', '') + " !important;}" );
+        }
+        document.getElementById("ksdarkFontSave").style.display = "block";
+        setTimeout(() => document.getElementById("ksdarkFontSave").style.display = "none", 3000);
+    });
+}
 
 (function() {
-    //addFontSetting();
     loadFilter();
+
+    if (GM_getValue('ksDarkCustomFontName', '') == "") {
+        GM_setValue('ksDarkCustomFontName', 'Gaegu');
+        GM_setValue('ksDarkCustomFontCss', 'https://fonts.googleapis.com/css2?family=Gaegu&display=swap');
+        GM_addStyle ("@import url(https://fonts.googleapis.com/css2?family=Gaegu&display=swap);");
+    } else {
+        GM_addStyle("@import url(" + GM_getValue('ksDarkCustomFontCss', '') + ")");
+    }
+
     if (GM_getValue('ksDarkFontName', '') == "") {
         GM_setValue('ksDarkFontName', 'NotoSans');
         GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: 'Noto Sans KR' !important;}" );
@@ -111,10 +125,20 @@ function GM_setValue(key, value) {
             GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '나눔고딕' !important;}" );
         } else if (GM_getValue('ksDarkFontName', '') == "나눔고딕") {
             GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: 'Noto Sans KR' !important;}" );
+        } else if (GM_getValue('ksDarkFontName', '') == "Custom") {
+            GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: " + GM_getValue('ksDarkCustomFontName', '') + " !important;}" );
         } else {
             GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: 'Noto Sans KR' !important;}" );
         }
-        //console.log(GM_getValue('ksDarkFontName', ''));
     }
-    setTimeout(() => addFontSetting(), 500);
+    setInterval(function() {
+        if (currentPage != location.href) {
+            currentPage = location.href;
+            var url_parts = currentPage.split("/");
+            var url_last_part = url_parts[url_parts.length-1];
+            if (url_last_part == 'settings') {
+                setTimeout(() => addCustomFontSetting(), 500);
+            }
+        }
+    }, 500);
 })();
