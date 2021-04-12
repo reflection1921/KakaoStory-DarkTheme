@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.10
+// @version      0.11
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -70,7 +70,7 @@ function GM_setValue(key, value) {
 }
 
 let currentPage = '';
-let versionString = '0.10(210413)';
+let versionString = '0.11(210413)';
 
 function addCustomFontSetting() {
     document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML = '<strong class="subtit_modify">카카오스토리 다크모드 설정</strong><dl class="list_account"><dt>폰트 설정</dt><dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_font1" class="inp_radio _friendListExposure" id="fontNoto" value="나눔고딕"> <label for="fontNoto">NotoSans</label></div><div class="radio_inp"> <input type="radio" name="open_font1" class="inp_radio _friendListExposure" id="fontNanum" value="NotoSans"> <label for="fontNanum">나눔고딕</label></div><div class="radio_inp"> <input type="radio" name="open_font1" class="inp_radio _friendListExposure" id="fontCustom" value="Custom"> <label for="fontCustom">사용자 설정</label></div></div></dd><dt>폰트 크기</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_size_add" value="' + GM_getValue('ksDarkFontSize', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> px 추가<br>※완벽히 지원되지 않아 일부 글자는 크기가 변하지 않을 수 있습니다.</dd><dt>사용자 설정 폰트명</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd><dt>사용자 설정 폰트<br>CSS URL</dt><dd><input type="text" class="tf_profile _input" id="ksdark_font_css_url" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd><dt>테마 설정</dt><dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeWhite" value="White"> <label for="ksDarkThemeWhite">Light Mode</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeDark" value="Dark"> <label for="ksDarkThemeDark">Dark Mode</label></div></div></dd><dt>다크테마 버전</dt><dd>' + versionString + '</dd><dt></dt><dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #f26a41 !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 일부 설정은 새로고침 하셔야 반영됩니다.</p></div></dd></dl>' + document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML;
@@ -169,7 +169,7 @@ function setFontSize() {
 
     //GM_setValue('ksDarkFontSize', '0'); //debug
     if (GM_getValue('ksDarkFontSize', '') == "") {
-        GM_setValue('ksDarkFontSize', '10');
+        GM_setValue('ksDarkFontSize', '0');
     }
     if (GM_getValue('ksDarkThemeStyle', '') == "") {
         GM_setValue('ksDarkThemeStyle', '#40444b');
@@ -202,6 +202,8 @@ function setFontSize() {
         }
     }
 
+    //쪽지 복사 가능
+    //document.getElementsByClassName("_messageText tf_write")[0].readOnly = false;
     setInterval(function() {
         if (currentPage != location.href) {
             currentPage = location.href;
