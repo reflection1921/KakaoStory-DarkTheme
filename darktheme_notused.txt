@@ -1,0 +1,24 @@
+story.kakao.com#$#.emoticon_keyboard .emoticon_control {background-color: #303235 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_tab .on .emt_tab_item {background-color: #36393f !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_item_list {background-color: #36393f !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_tab .on .emt_tab_item {border-left: 0px !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_tab .on .emt_tab_item {border-right: 0px !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_paging {background-color: #303235 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_paging {border-bottom: #303235 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next, .emoticon_keyboard .emoticon_control .emt_ctrl_next_on {border-left: 1px solid #303235 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev, .emoticon_keyboard .emoticon_control .emt_ctrl_prev_on {border-right: 1px solid #303235 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev span {background: none !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev span {width: 0 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev span {height: 0 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev span {border-top: 7px solid transparent !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev span {border-bottom: 7px solid transparent !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_prev span {border-right: 7px solid #dcddde !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next span {background: none !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next span {width: 0 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next span {height: 0 !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next span {border-top: 7px solid transparent !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next span {border-bottom: 7px solid transparent !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_control .emt_ctrl_next span {border-left: 7px solid #dcddde !important; }
+story.kakao.com#$#.emoticon_keyboard .emoticon_tab {border-bottom: 0px !important; }
+story.kakao.com#$#.emoticon_keyboard {background: #36393f !important; }
+story.kakao.com#$#.emoticon_keyboard {border: 1px solid #232527 !important; }
