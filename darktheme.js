@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.12
+// @version      0.13
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -25,8 +25,8 @@
 
 let currentPage = '';
 let notyTimeCount = 0;
-let latestNotyID = "0";
-let versionString = '0.12(210415)';
+//let latestNotyID = "0";
+let versionString = '0.13(210416)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -124,7 +124,7 @@ function addCustomFontSetting() {
         + '<dd><input type="text" class="tf_profile _input" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※기본으로 설정된 값을 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
           //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
-        + '<dd>버전: ' + versionString + '<br>개발: <a style="color: #00b5ff;" href="https://story.kakao.com/_jYmvy">Reflection</a><br>도움주신 분들: <a style="color: #00b5ff;" href="https://story.kakao.com/ldc6974">박종우</a>, <a style="color: #00b5ff;" href="https://story.kakao.com/_2ZQlS7">AppleWebKit</a>, 사일</dd>'
+        + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a><br>도움주신 분들: <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a>, <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일</dd>'
           //Apply
         + '<dt></dt>'
         + '<dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #f26a41 !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 일부 설정은 새로고침 하셔야 반영됩니다.</p></div></dd>'
@@ -220,7 +220,7 @@ function initializeNotify() {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             var jsonNoty = JSON.parse(xmlHttp.responseText);
-            latestNotyID = String(jsonNoty[0]["id"]);
+            GM_setValue('latestNotyID', String(jsonNoty[0]["id"]));
             //setNotify(String(notyContent), String(notyMessage), String(notyID));
         }
     }
@@ -243,12 +243,12 @@ function getLatestNotify() {
             var notyContent = jsonNoty[0]["content"];
             var notyURL = String(notyScheme).split("activities/")[1].split("?")[0].replace(".", "/");
             //console.log(notyURL);
-            if (String(notyID) == latestNotyID) {
+            if (String(notyID) == GM_getValue('latestNotyID', '')) {
             } else {
+                GM_setValue('latestNotyID', String(notyID));
                 if (String(jsonNoty[0]["is_new"]) == 'false') {
                     return;
                 }
-                latestNotyID = String(notyID);
                 //console.log((GM_getValue('ksDarkNotySound', '') === 'true'));
                 if (notyContent == undefined) {
                     notyContent = ' ';
