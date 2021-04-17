@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.13
+// @version      0.14
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -21,12 +21,13 @@
    ksDarkNotyUse: 알리미 쓸지말지
    ksDarkKillTeller: 스토리텔러/채널 버튼 제거
    ksDarkNotySound: 알리미 사운드 출력 할거임?
+   ksDarkBan: 강화된 차단 사용 ㄱ?
 */
 
 let currentPage = '';
 let notyTimeCount = 0;
-//let latestNotyID = "0";
-let versionString = '0.13(210416)';
+let banList = new Set();
+let versionString = '0.14(210418)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -68,6 +69,37 @@ function changeString() {
     replaceWordsByClassName('tit_story', '우리끼리', '편한친구');
     replaceWordsByClassName('ico_bestfriend_m _permissionPartOfFriends', '우리끼리보기', '편한친구공개');
     setAttributeByClassName('_permissionPartOfFriends', 'data-tooltip', '편한친구공개');
+}
+
+function hideBannedUserComment() {
+    var comments = document.getElementsByClassName("_commentContent");
+    for (var i = 0; i < comments.length; i++) {
+        var tmpBannedID = comments[i].getElementsByClassName("txt")[0].getElementsByTagName("p")[0].getElementsByTagName("a")[0].getAttribute("href").replace("/", "");
+
+        if (banList.has(tmpBannedID) == true) {
+            comments[i].parentElement.remove();
+            i -= 1;
+        }
+    }
+}
+
+function getBanUsers() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var jsonNoty = JSON.parse(xmlHttp.responseText);
+            //bannedUserIDArr = new Array(jsonNoty.length);
+            for (var i = 0; i < jsonNoty.length; i ++) {
+                banList.add(String(jsonNoty[i]["id"]));
+            }
+        }
+    }
+    xmlHttp.open("GET", "https://story.kakao.com/a/bans");
+    xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
+    xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
+    xmlHttp.setRequestHeader("Accept", "application/json");
+    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xmlHttp.send();
 }
 
 //Adguard 필터 적용
@@ -121,10 +153,13 @@ function addCustomFontSetting() {
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarknotysound" class="inp_radio _friendListExposure" id="ksDarkNotySound" value="false"> <label for="ksDarkNotySound">켜기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarknotysound" class="inp_radio _friendListExposure" id="ksDarkNotyNoSound" value="true"> <label for="ksDarkNotyNoSound">끄기</label></div></div></dd>'
           //알림 체크주기
         + '<dt>알림 체크 주기</dt>'
-        + '<dd><input type="text" class="tf_profile _input" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※기본으로 설정된 값을 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
+        + '<dd><input type="text" class="tf_profile _input" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※20초를 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
+          //강화된 차단
+        + '<dt>강화된 차단 사용</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div><br>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.</dd>'
           //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
-        + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a><br>도움주신 분들: <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a>, <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일</dd>'
+        + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일</dd>'
           //Apply
         + '<dt></dt>'
         + '<dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #f26a41 !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 일부 설정은 새로고침 하셔야 반영됩니다.</p></div></dd>'
@@ -162,6 +197,12 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkNotySound").checked = true;
     }
 
+    if (GM_getValue('ksDarkBan', '') == "true") {
+        document.getElementById("ksDarkBan").checked = true;
+    } else {
+        document.getElementById("ksDarkNoBan").checked = true;
+    }
+
     $(document).on("change",'input[name="open_font1"]',function(){
         var fontName = $('[name="open_font1"]:checked').val();
         if (fontName == 'Custom') {
@@ -186,6 +227,10 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarknotysound"]',function(){
         GM_setValue("ksDarkNotySound", $('[name="open_ksdarknotysound"]:checked').val());
+    });
+
+    $(document).on("change",'input[name="open_ksdarkban"]',function(){
+        GM_setValue("ksDarkBan", $('[name="open_ksdarkban"]:checked').val());
     });
 
     $('body').on('click', '#ksdarkApplyCustom', function() {
@@ -241,7 +286,8 @@ function getLatestNotify() {
             var notyMessage = jsonNoty[0]["message"];
             var notyScheme = jsonNoty[0]["scheme"];
             var notyContent = jsonNoty[0]["content"];
-            var notyURL = String(notyScheme).split("activities/")[1].split("?")[0].replace(".", "/");
+            var tmpNotyURL = String(notyScheme).split("/");
+            var notyURL = tmpNotyURL[tmpNotyURL.length-1].replace(".", "/");
             //console.log(notyURL);
             if (String(notyID) == GM_getValue('latestNotyID', '')) {
             } else {
@@ -282,12 +328,33 @@ function setFontSize() {
     xmlHttp.send();
 }
 
+$(document).ready(function(){
+    $(document).on('click', 'a[data-kant-id="1391"]', function(){
+        $(document).on('click', 'a[class="btn_com btn_or _dialogOk _dialogBtn"]', function(){
+            var splittedURL = $(location).attr('href').split('/');
+            var bannedUserID = splittedURL[splittedURL.length - 1];
+            banList.add(bannedUserID);
+            $(document).off('click', 'a[class="btn_com btn_or _dialogOk _dialogBtn"]');
+        });
+    });
+    $(document).on('click', 'a[data-kant-id="1392"]', function(){
+        var splittedURL = $(location).attr('href').split('/');
+        var bannedUserID = splittedURL[splittedURL.length - 1];
+        banList.delete(bannedUserID);
+        $(document).off('click', 'a[class="btn_com btn_or _dialogOk _dialogBtn"]');
+    });
+
+    $(document).on('click', 'a[data-kant-id="845"]', function() {
+        var userIdx = $('a[data-kant-id="845"]').index(this);
+        var userID = $('a[data-kant-id="844"]').eq(userIdx).parent().attr('data-model');
+        banList.delete(userID);
+    });
+
+});
+
 (function() {
     //노토산스 폰트 기본 로드(바로 적용 위함)
     GM_addStyle ( "@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);" );
-    //아이콘 수정한것들
-    GM_addStyle ( ".ico_ks2 {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks2.png\') no-repeat 0 0; !important;}" );
-    //GM_addStyle ( ".ico_ks {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks.png\') no-repeat 0 0; !important;}" );
     if (GM_getValue('ksDarkFontSize', '') == "") {
         GM_setValue('ksDarkFontSize', '0');
     }
@@ -302,7 +369,13 @@ function setFontSize() {
         GM_setValue('ksDarkNotySound', 'true'); //true가 알림사운드 꺼진거임 ㅇㅇ
     }
 
+    if (GM_getValue('ksDarkBan', '') == "") {
+        GM_setValue('ksDarkBan', 'false');
+    }
+
     if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
+        GM_addStyle ( ".ico_ks2 {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks2.png\') no-repeat 0 0; !important;}" );
+        //GM_addStyle ( ".ico_ks {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks.png\') no-repeat 0 0; !important;}" );
         loadAdguardFilter();
     }
 
@@ -312,6 +385,7 @@ function setFontSize() {
 
     setFontSize();
     initializeNotify();
+    getBanUsers();
 
     if (GM_getValue('ksDarkCustomFontName', '') == "") {
         GM_setValue('ksDarkCustomFontName', 'Noto Sans KR');
@@ -334,11 +408,14 @@ function setFontSize() {
     setInterval(function() {
          if (GM_getValue('ksDarkNotyUse', '') == "T") {
              notyTimeCount += 1;
-             if (notyTimeCount >= parseInt(GM_getValue('ksDarkNotyTime', ''))) {
+             if (notyTimeCount >= parseInt(GM_getValue('ksDarkNotyTime', '')) * 10) {
                  notyTimeCount = 0;
                  getLatestNotify();
              }
          }
+        if (GM_getValue('ksDarkBan', '') == "true") {
+            hideBannedUserComment();
+        }
 
         if (currentPage != location.href) {
             currentPage = location.href;
@@ -349,5 +426,5 @@ function setFontSize() {
             }
             //setTimeout(() => changeFontSize(), 5000);
         }
-    }, 1000);
+    }, 100);
 })();
