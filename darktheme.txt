@@ -356,4 +356,4 @@ story.kakao.com#$#.feed_relation .wrap_relation .desc_relation{ color: #acb0b8 !
 story.kakao.com#$#.write .preview .list_preview .bn_plus { background-color: rgba(255, 255, 255, 0) !important; }
 story.kakao.com#$#.profile_collection .my_inp .tf_txt { border: none !important; }
 story.kakao.com#$#.profile_collection .my_inp .tf_txt { background-color: #40444b !important; }
-story.kakao.com#$#.write .scrap .preview .inner_scrap .desc_scrap { background-color: #acb0b8 !important; }
+story.kakao.com#$#.write .scrap .preview .inner_scrap .desc_scrap { color: #acb0b8 !important; }
