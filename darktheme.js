@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Dark Theme
 // @namespace    http://chihaya.kr
-// @version      0.15
+// @version      0.14
 // @description  Make dark theme for KakaoStory
 // @author       Reflection
 // @match        https://story.kakao.com/*
@@ -27,7 +27,7 @@
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.15(210425)';
+let versionString = '0.14(210418)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -80,13 +80,6 @@ function hideBannedUserComment() {
             comments[i].parentElement.remove();
             i -= 1;
         }
-    }
-}
-
-function hideRecommendFeed() {
-    var recommendFeed = document.getElementsByClassName("section recommend");
-    for (var i = 0; i < recommendFeed.length; i++) {
-        recommendFeed[i].remove();
     }
 }
 
@@ -153,7 +146,7 @@ function addCustomFontSetting() {
         + '<dt>스토리텔러/채널<br>버튼</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerNoKill" value="F"> <label for="ksDarkTellerNoKill">보이기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerKill" value="T"> <label for="ksDarkTellerKill">안보이기</label></div></div></dd>'
           //알림 알림기능
-        + '<dt>스토리 알림 기능</dt>'
+        + '<dt>스토리 알림 기능 (베타)</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarknoty" class="inp_radio _friendListExposure" id="ksDarkNotyUse" value="T"> <label for="ksDarkNotyUse">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarknoty" class="inp_radio _friendListExposure" id="ksDarkNotyNotUse" value="F"> <label for="ksDarkNotyNotUse">사용안함</label></div></div></dd>'
           //알림 사운드 출력할거야 말거야(false가 소리켜는거임 사일런트옵션이라)
         + '<dt>알림 사운드</dt>'
@@ -382,7 +375,7 @@ $(document).ready(function(){
 
     if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
         GM_addStyle ( ".ico_ks2 {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks2.png\') no-repeat 0 0; !important;}" );
-        GM_addStyle ( ".ico_ks {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks.png\') no-repeat 0 0; !important;}" );
+        //GM_addStyle ( ".ico_ks {background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/ico_ks.png\') no-repeat 0 0; !important;}" );
         loadAdguardFilter();
     }
 
@@ -423,9 +416,6 @@ $(document).ready(function(){
         if (GM_getValue('ksDarkBan', '') == "true") {
             hideBannedUserComment();
         }
-
-        hideRecommendFeed();
-        changeString();
 
         if (currentPage != location.href) {
             currentPage = location.href;
