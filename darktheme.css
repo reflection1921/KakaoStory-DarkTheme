@@ -625,3 +625,9 @@ body { color: #dcddde !important; }
 .story_inflow .comment .comt_write .inp_write .txt_copy { color: #dcddde !important; }
 .comment .comt_write .inp_write .txt_copy { color: #dcddde !important; }
 .comment .comt_write .inp_write textarea { -webkit-text-fill-color: transparent !important; }
+.newnoti_layer .tit_subject { background-color: #202225 !important; }
+.newnoti_layer .ico_arrow_up { width: 0px !important; }
+.write .upload .add{ color: #dcddde !important; }
+.write .add:hover { color: #dcddde !important; }
+.write .upload { background-color: #2f3136 !important; }
+.write .upload { border: 1px solid #202225 !important; }
