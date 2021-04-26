@@ -622,5 +622,6 @@ body { color: #dcddde !important; }
 .btn_com.ing2:focus, .btn_com.ing2:hover { color: #7289da !important; }
 .btn_com.ing2:focus, .btn_com.ing2:hover { border: 1px solid #7289da !important; }
 .info_error_v2 { border-bottom: 1px solid #202225 !important; }
-/*.story_inflow .comment .comt_write .inp_write .txt_copy { color: #dcddde !important; }
-.comment .comt_write .inp_write textarea { -webkit-text-fill-color: transparent !important; }*/
+.story_inflow .comment .comt_write .inp_write .txt_copy { color: #dcddde !important; }
+.comment .comt_write .inp_write .txt_copy { color: #dcddde !important; }
+.comment .comt_write .inp_write textarea { -webkit-text-fill-color: transparent !important; }
