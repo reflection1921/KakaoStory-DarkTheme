@@ -572,7 +572,9 @@ body { color: #dcddde !important; }
 .newnoti_layer .txt_newnoti { color: #dcddde !important; }
 .newnoti_layer .list_newnoti .txt_point { color: #fff !important; }
 .newnoti_layer .list_newnoti .noti_on, .newnoti_layer .list_newnoti li:focus, .newnoti_layer .list_newnoti li:hover { background-color: #32353b !important; }
-.newnoti_layer .list_newnoti .no_read { background-color: #3d4046 !important; }
+.newnoti_layer .list_newnoti .no_read { background-color: #49453c !important; }
+.newnoti_layer .list_newnoti .no_read .link_frauser { margin: 10px 0 0 16px !important; }
+.newnoti_layer .list_newnoti .no_read { border-left: 4px solid #f6a820 !important; }
 .search_layer .list_search .info_user .txt_name { color: #dcddde !important; }
 .search_layer .list_search .txt_with { color: #afb1b4 !important; }
 .search_layer .list_search li { border-top: 1px solid #202225 !important; }
