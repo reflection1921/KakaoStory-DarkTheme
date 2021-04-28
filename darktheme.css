@@ -633,3 +633,4 @@ body { color: #dcddde !important; }
 .write .add:hover { color: #dcddde !important; }
 .write .upload { background-color: #2f3136 !important; }
 .write .upload { border: 1px solid #202225 !important; }
+.story_layer .list_people .info_user { height: 110% !important; }

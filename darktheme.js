@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         KakaoStory Dark Theme
+// @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.16
-// @description  Make dark theme for KakaoStory
-// @author       Reflection
+// @version      0.17
+// @description  Add useful features in KakaoStory
+// @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
 // @downloadURL  https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.js
 // @updateURL    https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.js
@@ -12,23 +12,23 @@
 // ==/UserScript==
 
 /* 내부 설정 값
-   ksDarkFontSize: 테마 폰트 크기
-   ksDarkThemeStyle: 테마 라이트 / 다크 모드 설정
+   ksDarkFontSize: 자체 폰트 크기 설정
+   ksDarkThemeStyle: 테마 설정
    ksDarkCustomFontName: 사용자 설정 폰트 이름
    ksDarkCustomFontCss: 사용자 설정 폰트 CSS 파일
-   ksDarkFontName: 테마 폰트 설정(일반적인) <-- 미사용
-   ksDarkNotyTime: 알리미 시간 주기(초단위)
-   ksDarkNotyUse: 알리미 쓸지말지
-   ksDarkKillTeller: 스토리텔러/채널 버튼 제거
-   ksDarkNotySound: 알리미 사운드 출력 할거임?
-   ksDarkBan: 강화된 차단 사용 ㄱ?
-   ksDarkHideLogo : 로고 가릴거임?
+   ksDarkFontName: 폰트 설정 (현재 사용되지 않는 기능)
+   ksDarkNotyTime: 알리미 시간 주기(초 단위)
+   ksDarkNotyUse: 알리미 사용 여부
+   ksDarkKillTeller: 스토리텔러/채널 버튼 삭제
+   ksDarkNotySound: 알리미 사운드 출력 여부
+   ksDarkBan: 강화된 차단 사용 여부
+   ksDarkHideLogo : 카카오스토리 활동 숨김 여부
 */
 
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.16(210426)';
+let versionString = '0.17(210428)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -120,6 +120,7 @@ function loadAdguardFilter() {
             GM_addStyle ( filter );
         }
     }
+    //xmlHttp.open("GET", "http://127.0.0.1/darkstyle/darktheme_dev.css");
     xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.css");
     xmlHttp.send();
 }
@@ -130,7 +131,7 @@ function killTellerChannel() {
     document.getElementsByClassName("group_gnb")[0].remove();
 }
 
-//폰트 설정 관련 함수(크기 설정 없음)
+//전체 설정 추가
 function addCustomFontSetting() {
     //다크모드 설정 웹 HTML 설정용
     document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML = '<strong class="subtit_modify">\' Enhanced 설정</strong>'
@@ -165,7 +166,7 @@ function addCustomFontSetting() {
           //강화된 차단
         + '<dt>강화된 차단 사용</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div><br>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.</dd>'
-        + '<dt>카카오스토리는<br>쪽팔려</dt>'
+        + '<dt>카카오스토리<br>숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div></dd>'
           //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
@@ -297,6 +298,7 @@ function initializeNotify() {
     xmlHttp.send();
 }
 
+//최신 알림 받아오기
 function getLatestNotify() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -331,6 +333,7 @@ function getLatestNotify() {
     xmlHttp.send();
 }
 
+//폰트 사이즈 변경
 function setFontSize() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -349,7 +352,7 @@ function setFontSize() {
 }
 
 $(document).ready(function(){
-
+    //차단 시 밴 리스트에 추가함
     $(document).on('click', 'a[data-kant-id="1391"]', function(){
         $(document).on('click', 'a[class="btn_com btn_or _dialogOk _dialogBtn"]', function(){
             var splittedURL = $(location).attr('href').split('/');
@@ -358,13 +361,14 @@ $(document).ready(function(){
             $(document).off('click', 'a[class="btn_com btn_or _dialogOk _dialogBtn"]');
         });
     });
+    //차단 해제 시 밴 리스트에서 삭제함
     $(document).on('click', 'a[data-kant-id="1392"]', function(){
         var splittedURL = $(location).attr('href').split('/');
         var bannedUserID = splittedURL[splittedURL.length - 1];
         banList.delete(bannedUserID);
         $(document).off('click', 'a[class="btn_com btn_or _dialogOk _dialogBtn"]');
     });
-
+    //설정 창에서 차단 해제 시 밴 리스트에서 삭제함
     $(document).on('click', 'a[data-kant-id="845"]', function() {
         var userIdx = $('a[data-kant-id="845"]').index(this);
         var userID = $('a[data-kant-id="844"]').eq(userIdx).parent().attr('data-model');
@@ -373,6 +377,7 @@ $(document).ready(function(){
 
 });
 
+//파비콘, 타이틀 네이버로 변경
 function hideLogo() {
     document.getElementsByTagName('title')[0].innerText = "NAVER"
     var link = document.querySelector("link[rel~='icon']");
@@ -384,56 +389,37 @@ function hideLogo() {
     link.href = 'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/naver_favi.ico';
 }
 
+function loadValue(valueID, defaultValue) {
+    if (GM_getValue(valueID, '') == "") {
+        GM_setValue(valueID, defaultValue);
+    }
+    return GM_getValue(valueID, '');
+}
+
 (function() {
     //노토산스 폰트 기본 로드(바로 적용 위함)
     GM_addStyle ( "@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);" );
-    if (GM_getValue('ksDarkFontSize', '') == "") {
-        GM_setValue('ksDarkFontSize', '0');
-    }
-    if (GM_getValue('ksDarkThemeStyle', '') == "") {
-        GM_setValue('ksDarkThemeStyle', '#40444b');
-    }
-    if (GM_getValue('ksDarkNotyTime', '') == "") {
-        GM_setValue('ksDarkNotyTime', '20');
-    }
+    loadValue('ksDarkFontSize', '0');
+    loadValue('ksDarkNotyTime', '20');
+    loadValue('ksDarkNotySound', 'true');
+    loadValue('ksDarkBan', 'false');
 
-    if (GM_getValue('ksDarkNotySound', '') == "") {
-        GM_setValue('ksDarkNotySound', 'true'); //true가 알림사운드 꺼진거임 ㅇㅇ
-    }
-
-    if (GM_getValue('ksDarkBan', '') == "") {
-        GM_setValue('ksDarkBan', 'false');
-    }
-
-    if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
+    if (loadValue('ksDarkThemeStyle', '#40444b') == '#40444b') {
         loadAdguardFilter();
     } else {
         GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh.png\'); } ');
     }
 
-    if (GM_getValue('ksDarkNotyUse', '') == "") {
-        GM_setValue('ksDarkNotyUse', 'T');
-    }
+    loadValue('ksDarkNotyUse', 'T');
 
     setFontSize();
     initializeNotify();
     getBanUsers();
 
-    if (GM_getValue('ksDarkCustomFontName', '') == "") {
-        GM_setValue('ksDarkCustomFontName', 'Noto Sans KR');
-        GM_setValue('ksDarkCustomFontCss', 'https://fonts.googleapis.com/css2?family=Gaegu&display=swap');
-        GM_addStyle ("@import url(https://fonts.googleapis.com/css2?family=Gaegu&display=swap);");
-    } else {
-        GM_addStyle("@import url(" + GM_getValue('ksDarkCustomFontCss', '') + ")");
-    }
+    GM_addStyle ("@import url(" + loadValue('ksDarkCustomFontCss', 'https://fonts.googleapis.com/css2?family=Gaegu&display=swap') + ");");
+    GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '" + loadValue('ksDarkCustomFontName', 'Noto Sans KR') + "' !important;}" );
 
-    if (GM_getValue('ksDarkHideLogo', '') == '') {
-        GM_setValue('ksDarkHideLogo', 'false');
-    }
-    GM_addStyle('.head_story .tit_kakaostory .logo_kakaostory { width: 0px !important; }');
-    GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { height: 27px !important; }');
-    if (GM_getValue('ksDarkHideLogo', '') == 'true') {
-        //LOGO숨기기
+    if (loadValue('ksDarkHideLogo', 'false') == 'true') {
         GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { width: 60px !important; }');
         GM_addStyle('.kakao_search { margin-left: 40px !important; }');
         GM_addStyle('.head_story .tit_kakaostory .link_kakaostory  { background: rgba(0,0,0,0) !important; }');
@@ -442,12 +428,10 @@ function hideLogo() {
         GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { width: 144px !important; }');
     }
 
-    GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '" + GM_getValue('ksDarkCustomFontName', '') + "' !important;}" );
+    GM_addStyle('.head_story .tit_kakaostory .logo_kakaostory { width: 0px !important; }');
+    GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { height: 27px !important; }');
 
-    if (GM_getValue('ksDarkKillTeller', '') == '') {
-        GM_setValue('ksDarkKillTeller', 'T');
-    }
-    if (GM_getValue('ksDarkKillTeller', '') == 'T') {
+    if (loadValue('ksDarkKillTeller', 'T') == 'T') {
         setTimeout(() => killTellerChannel(), 500);
     }
 
@@ -472,10 +456,10 @@ function hideLogo() {
             var url_parts = currentPage.split("/");
             var url_last_part = url_parts[url_parts.length-1];
             if (url_last_part == 'settings') {
-                setTimeout(() => addCustomFontSetting(), 500);
+                setTimeout(() => addCustomFontSetting(), 750);
             }
             if (GM_getValue('ksDarkHideLogo', '') == 'true') {
-                setTimeout(() => hideLogo(), 500);
+                setTimeout(() => hideLogo(), 750);
             }
             //setTimeout(() => changeFontSize(), 5000);
         }
