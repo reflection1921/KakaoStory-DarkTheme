@@ -24,6 +24,7 @@
 .feed .loading_wrap { background-image: url(https://i.imgur.com/GPJrniq.gif) !important; } /*Circle Loading Bar*/
 .write .music .preview .img_album .cover_frame { background-image: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/cover_music.png') !important; } /*Album Cover*/
 .head_story .tit_kakaostory .link_kakaostory { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh_dark.png'); } /*KakaoStory Logo*/
+.list_cate .thumb_user .ico_bsfriend { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/star_friend.png') !important; } /*친구창 관심친구*/
 body { background: #2f3136 !important; }
 body { color: #dcddde !important; }
 .head_story { background-color: #2f3136 !important; }
@@ -634,3 +635,7 @@ body { color: #dcddde !important; }
 .write .upload { background-color: #2f3136 !important; }
 .write .upload { border: 1px solid #202225 !important; }
 .story_layer .list_people .info_user { height: 110% !important; }
+.list_cate .thumb_user .ico_bsfriend { right: -2px !important; }
+.list_cate .thumb_user .ico_bsfriend { bottom: 0 !important; }
+.list_cate .thumb_user .ico_bsfriend { width: 16px !important; }
+.list_cate .thumb_user .ico_bsfriend { height: 16px !important; }
