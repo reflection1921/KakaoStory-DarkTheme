@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.17
+// @version      0.18
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -23,12 +23,13 @@
    ksDarkNotySound: 알리미 사운드 출력 여부
    ksDarkBan: 강화된 차단 사용 여부
    ksDarkHideLogo : 카카오스토리 활동 숨김 여부
+   ksDarkVersion : 버전 정보를 담고 있음(업데이트 내역 띄우기 위해서 사용함)
 */
 
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.17(210428)';
+let versionString = '0.18(210429)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -125,6 +126,18 @@ function loadAdguardFilter() {
     xmlHttp.send();
 }
 
+function loadEnhancedCSS() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var filter = xmlHttp.responseText
+            GM_addStyle ( filter );
+        }
+    }
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/enhanced.css");
+    xmlHttp.send();
+}
+
 //채널버튼, 텔러버튼 없애버리기
 function killTellerChannel() {
     document.getElementsByClassName("storyteller_gnb")[0].remove();
@@ -134,7 +147,13 @@ function killTellerChannel() {
 //전체 설정 추가
 function addCustomFontSetting() {
     //다크모드 설정 웹 HTML 설정용
-    document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML = '<strong class="subtit_modify">\' Enhanced 설정</strong>'
+    document.body.innerHTML = '<div class="cover _cover" id="enhancedLayer" style="display: none;  overflow-y: scroll;">'
+        + '<div class="dimmed dimmed50" style="z-index: 201;"></div>'
+        + '<div class="cover_wrapper" style="z-index: 201;">'
+        + '<div class="write cover_content cover_center">'
+        + '<div class="_layerWrapper layer_write">'
+        + '<div class="section _dropZone account_modify">'
+        + '<strong class="subtit_modify subtit_enhanced">\' Enhanced 설정</strong>'
         + '<dl class="list_account">'
           //폰트 설정
         + '<dt>폰트 설정</dt>'
@@ -172,9 +191,12 @@ function addCustomFontSetting() {
         + '<dt>다크테마 정보</dt>'
         + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
           //Apply
-        + '<dt></dt>'
-        + '<dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #7289da !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 일부 설정은 새로고침 하셔야 반영됩니다.</p></div></dd>'
-        + '</dl>' + document.getElementsByClassName("account_modify")[0].getElementsByTagName("fieldset")[0].innerHTML;
+//        + '<dt></dt>'
+//        + '<dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #7289da !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 일부 설정은 새로고침 하셔야 반영됩니다.</p></div></dd>'
+        + '</dl>'
+        + '<div class="inp_footer"><div class="bn_group"><a href="#" class="_cancelBtn btn_com btn_wh" id="ksdarkCancel"><em>취소</em></a> <a class="btn_com btn_or" id="ksdarkApplyCustom"><em>올리기</em></a></div><div id="ksdarkSaveInfo">일부 설정은 새로고침 해야 반영됩니다.</div></div>'
+        + '</div></div></div></div></div>'
+        + document.body.innerHTML;
 
     if (GM_getValue('ksDarkCustomFontName', '') == "Noto Sans KR") {
         document.getElementById("fontNoto").checked = true;
@@ -262,8 +284,13 @@ function addCustomFontSetting() {
         GM_addStyle("@import url(" + GM_getValue('ksDarkCustomFontCss', '') + ")");
         GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: " + GM_getValue('ksDarkCustomFontName', '') + " !important;}" );
         setFontSize();
-        document.getElementById("ksdarkFontSave").style.display = "block";
-        setTimeout(() => document.getElementById("ksdarkFontSave").style.display = "none", 3000);
+        document.getElementById("enhancedLayer").style.display = 'none';
+        enableScroll();
+    });
+
+    $('body').on('click', '#ksdarkCancel', function() {
+        document.getElementById("enhancedLayer").style.display = 'none';
+        enableScroll();
     });
 }
 
@@ -351,6 +378,24 @@ function setFontSize() {
     xmlHttp.send();
 }
 
+function viewUpdate() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var filter = xmlHttp.responseText
+            document.body.innerHTML = '<div id="updateNoticeLayer" class="cover _cover" style="overflow-y: scroll"><div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="write cover_content cover_center" data-kant-group="wrt" data-part-name="view"><div class="_layerWrapper layer_write"><div class="section _dropZone account_modify"><div class="writing"><div class="inp_contents" data-part-name="editor"><strong class="subtit_modify subtit_enhanced">\' Enhanced 업데이트 내역</strong><div style="word-break: break-all">' + filter + '</div></div></div><div></div><div class="inp_footer"><div class="bn_group"> <a href="#" class="_postBtn btn_com btn_or" id="ksdarkUpdateNoticeOK"><em>알겠어용</em></a></div></div></div></div><div></div></div></div></div>' + document.body.innerHTML;
+            disableScroll();
+            $('body').on('click', '#ksdarkUpdateNoticeOK', function() {
+                document.getElementById("updateNoticeLayer").style.display = 'none';
+                enableScroll();
+            });
+        }
+    }
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/update_notice.html");
+    xmlHttp.send();
+
+}
+
 $(document).ready(function(){
     //차단 시 밴 리스트에 추가함
     $(document).on('click', 'a[data-kant-id="1391"]', function(){
@@ -396,7 +441,28 @@ function loadValue(valueID, defaultValue) {
     return GM_getValue(valueID, '');
 }
 
+function addEnhancedMenu() {
+    document.getElementsByClassName("menu_util")[0].innerHTML = '<li><a id="ksdarkEnhancedOpen" class="link_menu _btnSettingProfile">Enhanced 설정</a></li>' + document.getElementsByClassName("menu_util")[0].innerHTML;
+    $('body').on('click', '#ksdarkEnhancedOpen', function() {
+        document.getElementById("enhancedLayer").style.display = 'block';
+        $('html,body').scrollTop(0);
+        disableScroll();
+    });
+}
+
+function enableScroll() {
+    window.onscroll = function() {};
+}
+
+function disableScroll() {
+    window.onscroll = function() {
+        window.scrollTo(0, 0);
+    };
+}
+
+
 (function() {
+    //GM_setValue('ksDarkVersion', '');
     //노토산스 폰트 기본 로드(바로 적용 위함)
     GM_addStyle ( "@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);" );
     loadValue('ksDarkFontSize', '0');
@@ -415,6 +481,12 @@ function loadValue(valueID, defaultValue) {
     setFontSize();
     initializeNotify();
     getBanUsers();
+    loadEnhancedCSS();
+    addCustomFontSetting();
+    if (GM_getValue("ksDarkVersion", '') !== versionString) {
+        viewUpdate();
+        GM_setValue('ksDarkVersion', versionString);
+    }
 
     GM_addStyle ("@import url(" + loadValue('ksDarkCustomFontCss', 'https://fonts.googleapis.com/css2?family=Gaegu&display=swap') + ");");
     GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '" + loadValue('ksDarkCustomFontName', 'Noto Sans KR') + "' !important;}" );
@@ -435,7 +507,8 @@ function loadValue(valueID, defaultValue) {
         setTimeout(() => killTellerChannel(), 500);
     }
 
-    //addCustomFontSetting()의 경우 무조건 마지막에 로드하도록 설정해야함.
+    setTimeout(() => addEnhancedMenu(), 1000);
+
     setInterval(function() {
          if (GM_getValue('ksDarkNotyUse', '') == "T") {
              notyTimeCount += 1;
@@ -449,15 +522,11 @@ function loadValue(valueID, defaultValue) {
         }
 
         hideRecommendFeed();
-        //changeString();
 
         if (currentPage != location.href) {
             currentPage = location.href;
             var url_parts = currentPage.split("/");
             var url_last_part = url_parts[url_parts.length-1];
-            if (url_last_part == 'settings') {
-                setTimeout(() => addCustomFontSetting(), 750);
-            }
             if (GM_getValue('ksDarkHideLogo', '') == 'true') {
                 setTimeout(() => hideLogo(), 750);
             }
