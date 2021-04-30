@@ -25,6 +25,10 @@
 .write .music .preview .img_album .cover_frame { background-image: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/cover_music.png') !important; } /*Album Cover*/
 .head_story .tit_kakaostory .link_kakaostory { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh_dark.png'); } /*KakaoStory Logo*/
 .list_cate .thumb_user .ico_bsfriend { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/star_friend.png') !important; } /*친구창 관심친구*/
+.frinfo_wrap .list_frinfo .pf_thumb .ico_bsfr { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/star_friend_small_disabled.png') !important; } /*더보기 친구창 관친*/
+.frinfo_wrap .list_frinfo .pf_thumb .ico_bsfr.bsfr_on { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/star_friend_small.png') !important; } /*더보기 친구창 관친*/
+.cover_type2 .cover_cont .ico_pf { background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/star_friend_big_disabled.png') !important; } /*스토리 들어가서 관친*/
+.cover_type2 .cover_cont .ico_pf.on{ background: url('https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/star_friend_big.png') !important; } /*스토리 들어가서 관친*/
 body { background: #2f3136 !important; }
 body { color: #dcddde !important; }
 .head_story { background-color: #2f3136 !important; }
@@ -420,14 +424,14 @@ body { color: #dcddde !important; }
 .wrap_itemstory .item_story { border-bottom: 1px solid #202225 !important; }
 .cover_cont .info_btn .on.btn_cover2 { background: #7289da !important; }
 .cover_cont .info_btn .on.btn_cover2 { border-color: #7289da !important; }
-.cover_cont .info_btn .on.btn_cover2:focus, .cover_cont .info_btn .on.btn_cover2:hover { background: #1574bd !important; }
-.cover_cont .info_btn .on.btn_cover2:focus, .cover_cont .info_btn .on.btn_cover2:hover { border-color: #1574bd !important; }
+.cover_cont .info_btn .on.btn_cover2:focus, .cover_cont .info_btn .on.btn_cover2:hover { background: #677bc4 !important; }
+.cover_cont .info_btn .on.btn_cover2:focus, .cover_cont .info_btn .on.btn_cover2:hover { border-color: #677bc4 !important; }
 .cover_cont .info_btn .on.btn_cover2:focus .area_ico, .cover_cont .info_btn .on.btn_cover2:hover .area_ico { border-left: 1px solid #fff !important; }
 .cover_cont .info_btn .on .area_ico { border-left: 1px solid #fff !important; }
 .cover_cont .info_btn .btn_cover3.on { border-color: #7289da !important; }
 .cover_cont .info_btn .btn_cover3.on { background: #7289da !important; }
-.cover_cont .info_btn .btn_cover3.on:focus, .cover_cont .info_btn .btn_cover3.on:hover { background: #1574bd !important; }
-.cover_cont .info_btn .btn_cover3.on:focus, .cover_cont .info_btn .btn_cover3.on:hover { border-color: #1574bd !important; }
+.cover_cont .info_btn .btn_cover3.on:focus, .cover_cont .info_btn .btn_cover3.on:hover { background: #677bc4 !important; }
+.cover_cont .info_btn .btn_cover3.on:focus, .cover_cont .info_btn .btn_cover3.on:hover { border-color: #677bc4 !important; }
 .story_widgets .tit_etc { border-top: 1px solid #202225 !important; }
 .comment_type2 .more { border-top: 1px solid #202225 !important; }
 .desc_channelinfo { color: #afb0b2 !important; }
@@ -639,3 +643,6 @@ body { color: #dcddde !important; }
 .list_cate .thumb_user .ico_bsfriend { bottom: 0 !important; }
 .list_cate .thumb_user .ico_bsfriend { width: 16px !important; }
 .list_cate .thumb_user .ico_bsfriend { height: 16px !important; }
+.__tablet__ .snb_profile .wrap_thumb, .desktop_s .snb_profile .wrap_thumb { border-bottom: 1px solid #202225 !important; }
+.__tablet__ .util_menu, .desktop_s .util_menu { border-bottom: 1px solid #202225 !important; }
+.__tablet__ .mystory_menu, .desktop_s .mystory_menu { border-bottom: 1px solid #202225 !important; }
