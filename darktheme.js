@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.19
+// @version      0.20
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -30,7 +30,7 @@
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.19(210430)';
+let versionString = '0.20(210430)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -122,6 +122,7 @@ function loadAdguardFilter() {
             GM_addStyle ( filter );
         }
     }
+    //xmlHttp.open("GET", "http://127.0.0.1/darkstyle/darktheme_dev.css");
     xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.css");
     xmlHttp.send();
 }
@@ -247,7 +248,7 @@ function addCustomFontSetting() {
 
     if (GM_getValue('ksDarkImageView', '') == "nothing") {
         document.getElementById("ksDarkDelImage").checked = true;
-    } else if (GM_getValue('ksDarkCustomFontName', '') == "hide") {
+    } else if (GM_getValue('ksDarkImageView', '') == "hide") {
         document.getElementById("ksDarkHideImage").checked = true;
     } else {
         document.getElementById("ksDarkVisibleImage").checked = true;
