@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.18
+// @version      0.19
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -24,12 +24,13 @@
    ksDarkBan: 강화된 차단 사용 여부
    ksDarkHideLogo : 카카오스토리 활동 숨김 여부
    ksDarkVersion : 버전 정보를 담고 있음(업데이트 내역 띄우기 위해서 사용함)
+   ksDarkImageView : 이미지 숨길건지
 */
 
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.18(210429)';
+let versionString = '0.19(210430)';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -121,7 +122,6 @@ function loadAdguardFilter() {
             GM_addStyle ( filter );
         }
     }
-    //xmlHttp.open("GET", "http://127.0.0.1/darkstyle/darktheme_dev.css");
     xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.css");
     xmlHttp.send();
 }
@@ -147,8 +147,12 @@ function killTellerChannel() {
 //전체 설정 추가
 function addCustomFontSetting() {
     //다크모드 설정 웹 HTML 설정용
-    document.body.innerHTML = '<div class="cover _cover" id="enhancedLayer" style="display: none;  overflow-y: scroll;">'
-        + '<div class="dimmed dimmed50" style="z-index: 201;"></div>'
+    var customSetting = document.createElement('div');
+    customSetting.id = 'enhancedLayer';
+    customSetting.className = 'cover _cover';
+    customSetting.style.cssText = 'display: none;  overflow-y: scroll;';
+    document.body.appendChild(customSetting);
+    document.getElementById('enhancedLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div>'
         + '<div class="cover_wrapper" style="z-index: 201;">'
         + '<div class="write cover_content cover_center">'
         + '<div class="_layerWrapper layer_write">'
@@ -184,19 +188,18 @@ function addCustomFontSetting() {
         + '<dd><input type="text" class="tf_profile _input" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※20초를 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
           //강화된 차단
         + '<dt>강화된 차단 사용</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div><br>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.</dd>'
-        + '<dt>카카오스토리<br>숨기기</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div></dd>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.</dd>'
+        + '<dt>로고 숨기기</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div>※해당 기능을 사용하면 카카오스토리 로고가 삭제되고, 파비콘 및 타이틀이 네이버로 변경됩니다.</dd>'
+        + '<dt>이미지 숨기기</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp" style="display:none"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkDelImage" value="nothing" disabled> <label for="ksDarkDelImage">삭제</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
           //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
         + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
           //Apply
-//        + '<dt></dt>'
-//        + '<dd><div class="btn_area"><a id="ksdarkApplyCustom" class="btn_com btn_wh" style="background-color: #7289da !important">적용</a><p class="info_msg" id="ksdarkFontSave" style="display: none">저장되었습니다. 일부 설정은 새로고침 하셔야 반영됩니다.</p></div></dd>'
         + '</dl>'
-        + '<div class="inp_footer"><div class="bn_group"><a href="#" class="_cancelBtn btn_com btn_wh" id="ksdarkCancel"><em>취소</em></a> <a class="btn_com btn_or" id="ksdarkApplyCustom"><em>올리기</em></a></div><div id="ksdarkSaveInfo">일부 설정은 새로고침 해야 반영됩니다.</div></div>'
-        + '</div></div></div></div></div>'
-        + document.body.innerHTML;
+        + '<div class="inp_footer"><div class="bn_group"><a href="#" class="_cancelBtn btn_com btn_wh" id="ksdarkCancel"><em>취소</em></a> <a class="btn_com btn_or" id="ksdarkApplyCustom"><em>저장</em></a></div><div id="ksdarkSaveInfo">일부 설정은 새로고침 해야 반영됩니다.</div></div>'
+        + '</div></div></div></div>'
 
     if (GM_getValue('ksDarkCustomFontName', '') == "Noto Sans KR") {
         document.getElementById("fontNoto").checked = true;
@@ -242,6 +245,14 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkNoBan").checked = true;
     }
 
+    if (GM_getValue('ksDarkImageView', '') == "nothing") {
+        document.getElementById("ksDarkDelImage").checked = true;
+    } else if (GM_getValue('ksDarkCustomFontName', '') == "hide") {
+        document.getElementById("ksDarkHideImage").checked = true;
+    } else {
+        document.getElementById("ksDarkVisibleImage").checked = true;
+    }
+
     $(document).on("change",'input[name="open_font1"]',function(){
         var fontName = $('[name="open_font1"]:checked').val();
         if (fontName == 'Custom') {
@@ -274,6 +285,10 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarkban"]',function(){
         GM_setValue("ksDarkBan", $('[name="open_ksdarkban"]:checked').val());
+    });
+
+    $(document).on("change",'input[name="open_ksdarkhideimage"]',function(){
+        GM_setValue("ksDarkImageView", $('[name="open_ksdarkhideimage"]:checked').val());
     });
 
     $('body').on('click', '#ksdarkApplyCustom', function() {
@@ -382,8 +397,12 @@ function viewUpdate() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            var filter = xmlHttp.responseText
-            document.body.innerHTML = '<div id="updateNoticeLayer" class="cover _cover" style="overflow-y: scroll"><div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="write cover_content cover_center" data-kant-group="wrt" data-part-name="view"><div class="_layerWrapper layer_write"><div class="section _dropZone account_modify"><div class="writing"><div class="inp_contents" data-part-name="editor"><strong class="subtit_modify subtit_enhanced">\' Enhanced 업데이트 내역</strong><div style="word-break: break-all">' + filter + '</div></div></div><div></div><div class="inp_footer"><div class="bn_group"> <a href="#" class="_postBtn btn_com btn_or" id="ksdarkUpdateNoticeOK"><em>알겠어용</em></a></div></div></div></div><div></div></div></div></div>' + document.body.innerHTML;
+            var filter = xmlHttp.responseText;
+            var updateNotice = document.createElement('div');
+            updateNotice.id = 'updateNoticeLayer';
+            updateNotice.className = 'cover _cover';
+            document.body.appendChild(updateNotice);
+            document.getElementById('updateNoticeLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="write cover_content cover_center" data-kant-group="wrt" data-part-name="view"><div class="_layerWrapper layer_write"><div class="section _dropZone account_modify"><div class="writing"><div class="inp_contents" data-part-name="editor"><strong class="subtit_modify subtit_enhanced">\' Enhanced 업데이트 내역</strong><div style="word-break: break-all">' + filter + '</div></div></div><div></div><div class="inp_footer"><div class="bn_group"> <a href="#" class="_postBtn btn_com btn_or" id="ksdarkUpdateNoticeOK"><em>알겠어용</em></a></div></div></div></div><div></div></div></div>';
             disableScroll();
             $('body').on('click', '#ksdarkUpdateNoticeOK', function() {
                 document.getElementById("updateNoticeLayer").style.display = 'none';
@@ -500,11 +519,23 @@ function disableScroll() {
         GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { width: 144px !important; }');
     }
 
+    var imageStatus = loadValue('ksDarkImageView', 'view');
+    if (imageStatus == 'nothing') {
+        //GM_addStyle('.fd_cont .img_wrap { display: none !important; }');
+        //GM_addStyle('.wrap_swipe { display: none !important; }');
+        //GM_addStyle('.fd_cont .movie_wrap { display: none !important; }');
+    } else if (imageStatus == 'hide') {
+        GM_addStyle('.fd_cont .img_wrap .img { filter: blur(150px) !important; }');
+        GM_addStyle('.wrap_swipe .link_swipe { filter: blur(150px) !important; }');
+        GM_addStyle('.fd_cont .movie_wrap.v2 .img_movie { filter: blur(150px) !important; }');
+        GM_addStyle('.fd_cont .movie_wrap .img_movie { filter: blur(150px) !important; }');
+    }
+
     GM_addStyle('.head_story .tit_kakaostory .logo_kakaostory { width: 0px !important; }');
     GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { height: 27px !important; }');
 
     if (loadValue('ksDarkKillTeller', 'T') == 'T') {
-        setTimeout(() => killTellerChannel(), 500);
+        setTimeout(() => killTellerChannel(), 1000);
     }
 
     setTimeout(() => addEnhancedMenu(), 1000);
@@ -523,6 +554,7 @@ function disableScroll() {
 
         hideRecommendFeed();
 
+
         if (currentPage != location.href) {
             currentPage = location.href;
             var url_parts = currentPage.split("/");
@@ -530,6 +562,7 @@ function disableScroll() {
             if (GM_getValue('ksDarkHideLogo', '') == 'true') {
                 setTimeout(() => hideLogo(), 750);
             }
+            //setTimeout(() => addCustomFontSetting(), 750);
             //setTimeout(() => changeFontSize(), 5000);
         }
     }, 100);
