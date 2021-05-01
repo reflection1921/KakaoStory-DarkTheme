@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.20
+// @version      0.21
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -25,12 +25,15 @@
    ksDarkHideLogo : 카카오스토리 활동 숨김 여부
    ksDarkVersion : 버전 정보를 담고 있음(업데이트 내역 띄우기 위해서 사용함)
    ksDarkImageView : 이미지 숨길건지
+   ksDarkThemeStyleSystem : 시스템 테마가 시스템 따라갈거임?
+   ksDarkMention : 디코스타일 멘션 쓸거냐?
 */
 
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.20(210430)';
+let versionString = '0.21(210502)';
+let myID = '';
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -80,7 +83,7 @@ function hideBannedUserComment() {
         var tmpBannedID = comments[i].getElementsByClassName("txt")[0].getElementsByTagName("p")[0].getElementsByTagName("a")[0].getAttribute("href").replace("/", "");
 
         if (banList.has(tmpBannedID) == true) {
-            comments[i].parentElement.remove();
+            comments[i].parentElement.style.display = 'none';
             i -= 1;
         }
     }
@@ -140,9 +143,9 @@ function loadEnhancedCSS() {
 }
 
 //채널버튼, 텔러버튼 없애버리기
-function killTellerChannel() {
-    document.getElementsByClassName("storyteller_gnb")[0].remove();
-    document.getElementsByClassName("group_gnb")[0].remove();
+function killTellerChannel(val) {
+    document.getElementsByClassName("storyteller_gnb")[0].style.display = val;
+    document.getElementsByClassName("group_gnb")[0].style.display = val;
 }
 
 //전체 설정 추가
@@ -165,20 +168,22 @@ function addCustomFontSetting() {
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_font1" class="inp_radio _friendListExposure" id="fontNoto" value="Noto Sans KR"> <label for="fontNoto">NotoSans</label></div><div class="radio_inp"> <input type="radio" name="open_font1" class="inp_radio _friendListExposure" id="fontNanum" value="나눔고딕"> <label for="fontNanum">나눔고딕</label></div><div class="radio_inp"> <input type="radio" name="open_font1" class="inp_radio _friendListExposure" id="fontCustom" value="Custom"> <label for="fontCustom">사용자 설정</label></div></div></dd>'
           //폰트 크기 설정
         + '<dt>폰트 크기</dt>'
-        + '<dd><input type="text" class="tf_profile _input" id="ksdark_font_size_add" value="' + GM_getValue('ksDarkFontSize', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> px 추가</dd>'
+        + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_size_add" value="' + GM_getValue('ksDarkFontSize', '') + '" style="border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> px 추가</dd>'
           //사용자 설정 폰트 이름
         + '<dt>사용자 설정 폰트명</dt>'
-        + '<dd><input type="text" class="tf_profile _input" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd>'
+        + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd>'
         + '<dt>사용자 설정 폰트<br>CSS URL</dt>'
           //사용자 설정 폰트 CSS
-        + '<dd><input type="text" class="tf_profile _input" id="ksdark_font_css_url" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd>'
+        + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_css_url" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd>'
           //다크테마 설정
         + '<dt>테마 설정</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeWhite" value="#ffffff"> <label for="ksDarkThemeWhite">Light Mode</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeDark" value="#40444b"> <label for="ksDarkThemeDark">Discord Dark Mode</label></div></div></dd>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeWhite" value="#ffffff"> <label for="ksDarkThemeWhite">Light Mode</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeDark" value="#40444b"> <label for="ksDarkThemeDark">Discord Dark Mode</label></div></div><div><input type="checkbox" class="inp_radio _friendListExposure" name="ksdarkusesystemtheme" id="ksDarkSystemTheme"> <label for="ksDarkSystemTheme">내 PC의 테마 따라가기</label></div></dd>'
           //스토리 텔러, 채널 버튼 삭제 설정
         + '<dt>스토리텔러/채널<br>버튼</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerNoKill" value="F"> <label for="ksDarkTellerNoKill">보이기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerKill" value="T"> <label for="ksDarkTellerKill">안보이기</label></div></div></dd>'
-          //알림 알림기능
+        + '<dt>디스코드 언급 스타일</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkmention" class="inp_radio _friendListExposure" id="ksDarkMention" value="true"> <label for="ksDarkMention">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkmention" class="inp_radio _friendListExposure" id="ksDarkNoMention" value="false"> <label for="ksDarkNoMention">사용안함</label></div></div></dd>'
+        //알림 알림기능
         + '<dt>스토리 알림 기능</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarknoty" class="inp_radio _friendListExposure" id="ksDarkNotyUse" value="T"> <label for="ksDarkNotyUse">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarknoty" class="inp_radio _friendListExposure" id="ksDarkNotyNotUse" value="F"> <label for="ksDarkNotyNotUse">사용안함</label></div></div></dd>'
           //알림 사운드 출력할거야 말거야(false가 소리켜는거임 사일런트옵션이라)
@@ -186,7 +191,7 @@ function addCustomFontSetting() {
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarknotysound" class="inp_radio _friendListExposure" id="ksDarkNotySound" value="false"> <label for="ksDarkNotySound">켜기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarknotysound" class="inp_radio _friendListExposure" id="ksDarkNotyNoSound" value="true"> <label for="ksDarkNotyNoSound">끄기</label></div></div></dd>'
           //알림 체크주기
         + '<dt>알림 체크 주기</dt>'
-        + '<dd><input type="text" class="tf_profile _input" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※20초를 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
+        + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※20초를 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
           //강화된 차단
         + '<dt>강화된 차단 사용</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.</dd>'
@@ -216,10 +221,22 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkThemeWhite").checked = true;
     }
 
+    if (GM_getValue('ksDarkThemeStyleSystem', '') == 'true') {
+        document.getElementById("ksDarkSystemTheme").checked = true;
+    } else {
+        document.getElementById("ksDarkSystemTheme").checked = false;
+    }
+
     if (GM_getValue('ksDarkHideLogo', '') == "true") {
         document.getElementById("ksDarkHideLogo").checked = true;
     } else {
         document.getElementById("ksDarkNoHideLogo").checked = true;
+    }
+
+    if (GM_getValue('ksDarkMention', '') == "true") {
+        document.getElementById("ksDarkMention").checked = true;
+    } else {
+        document.getElementById("ksDarkNoMention").checked = true;
     }
 
     if (GM_getValue('ksDarkKillTeller', '') == "T") {
@@ -265,7 +282,25 @@ function addCustomFontSetting() {
     });
 
     $(document).on("change",'input[name="open_ksdarkstyle1"]',function(){
-        GM_setValue("ksDarkThemeStyle", $('[name="open_ksdarkstyle1"]:checked').val());
+        if (GM_getValue("ksDarkThemeStyleSystem", '') == 'false') {
+            GM_setValue("ksDarkThemeStyle", $('[name="open_ksdarkstyle1"]:checked').val());
+            changeTheme();
+        }
+    });
+
+    $(document).on("change",'input[name="ksdarkusesystemtheme"]',function(){
+        if (document.getElementById("ksDarkSystemTheme").checked) {
+            GM_setValue("ksDarkThemeStyleSystem", 'true');
+            var systemTheme = isSystemDark();
+            var nowTheme = GM_getValue('ksDarkThemeStyle', '');
+            if (systemTheme != nowTheme) {
+                GM_setValue('ksDarkThemeStyle', systemTheme);
+                changeTheme();
+            }
+        } else {
+            GM_setValue("ksDarkThemeStyleSystem", 'false');
+
+        }
     });
 
     $(document).on("change",'input[name="open_ksdarknoty"]',function(){
@@ -278,6 +313,15 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarktellerkill"]',function(){
         GM_setValue("ksDarkKillTeller", $('[name="open_ksdarktellerkill"]:checked').val());
+        if (loadValue('ksDarkKillTeller', 'T') == 'T') {
+            killTellerChannel('none');
+        } else {
+            killTellerChannel('block');
+        }
+    });
+
+    $(document).on("change",'input[name="open_ksdarkmention"]',function(){
+        GM_setValue("ksDarkMention", $('[name="open_ksdarkmention"]:checked').val());
     });
 
     $(document).on("change",'input[name="open_ksdarknotysound"]',function(){
@@ -308,6 +352,28 @@ function addCustomFontSetting() {
         document.getElementById("enhancedLayer").style.display = 'none';
         enableScroll();
     });
+}
+
+function changeTheme() {
+    if (loadValue('ksDarkThemeStyle', '#40444b') == '#40444b') {
+        changeDark();
+
+    } else {
+        changeLight();
+
+    }
+}
+
+function changeDark() {
+    loadAdguardFilter();
+    GM_addStyle('._ksdark_cls { background-color: ' + loadValue('ksDarkThemeStyle', '#40444b')+ ' !important; }');
+}
+
+function changeLight() {
+    $('style').remove();
+    setFontSize();
+    loadSettingsV2();
+    GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh.png\'); } ');
 }
 
 function setNotify(content, title_, url) {
@@ -440,6 +506,12 @@ $(document).ready(function(){
         banList.delete(userID);
     });
 
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (loadValue('ksDarkThemeStyleSystem', 'false') == 'true') {
+            var systemColor = e.matches ? changeDark() : changeLight();
+        }
+    });
+
 });
 
 //파비콘, 타이틀 네이버로 변경
@@ -480,34 +552,16 @@ function disableScroll() {
     };
 }
 
-
-(function() {
-    //GM_setValue('ksDarkVersion', '');
-    //노토산스 폰트 기본 로드(바로 적용 위함)
-    GM_addStyle ( "@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);" );
-    loadValue('ksDarkFontSize', '0');
-    loadValue('ksDarkNotyTime', '20');
-    loadValue('ksDarkNotySound', 'true');
-    loadValue('ksDarkBan', 'false');
-
-    if (loadValue('ksDarkThemeStyle', '#40444b') == '#40444b') {
-        loadAdguardFilter();
+function isSystemDark() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return '#40444b';
     } else {
-        GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh.png\'); } ');
+        return '#ffffff';
     }
+}
 
-    loadValue('ksDarkNotyUse', 'T');
-
-    setFontSize();
-    initializeNotify();
-    getBanUsers();
-    loadEnhancedCSS();
-    addCustomFontSetting();
-    if (GM_getValue("ksDarkVersion", '') !== versionString) {
-        viewUpdate();
-        GM_setValue('ksDarkVersion', versionString);
-    }
-
+function loadSettingsV2() {
+    GM_addStyle ( "@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);" );
     GM_addStyle ("@import url(" + loadValue('ksDarkCustomFontCss', 'https://fonts.googleapis.com/css2?family=Gaegu&display=swap') + ");");
     GM_addStyle ( "body, button, input, select, td, textarea, th {font-family: '" + loadValue('ksDarkCustomFontName', 'Noto Sans KR') + "' !important;}" );
 
@@ -534,12 +588,95 @@ function disableScroll() {
 
     GM_addStyle('.head_story .tit_kakaostory .logo_kakaostory { width: 0px !important; }');
     GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { height: 27px !important; }');
+    GM_addStyle('._ksdark_cls { background-color: ' + loadValue('ksDarkThemeStyle', '#40444b')+ ' !important; }');
+}
+
+function getMyID() {
+    var tmpMyID = $('a[data-kant-id="737"]').attr('href').substring(1);
+    if (tmpMyID.charAt(0) == '_') {
+        myID = tmpMyID;
+    } else {
+        getMySID(tmpMyID);
+    }
+}
+
+function getMySID(val) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var jsonProf = JSON.parse(xmlHttp.responseText);
+            if (jsonProf.activities.length == 0) {
+                myID = '';
+            } else {
+                var tmpID = jsonProf.activities[0].id;
+                myID = tmpID.split(".")[0];
+            }
+        }
+    }
+    xmlHttp.open("GET", "https://story.kakao.com/a/profiles/" + val + "?with=activities");
+    xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
+    xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
+    xmlHttp.setRequestHeader("Accept", "application/json");
+    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xmlHttp.send();
+}
+
+function highlightComment() {
+    var comments = document.getElementsByClassName("_commentContent");
+    for (var i = 0; i < comments.length; i++) {
+        var tmpComment = comments[i].getElementsByClassName("txt")[0].getElementsByClassName("_decoratedProfile");
+        for ( var j = 0; j < tmpComment.length; j++) {
+            var tmpUserID = tmpComment[j].getAttribute("data-id");
+            if (myID == tmpUserID) {
+            comments[i].parentElement.style.cssText = 'background-color: rgba(250,166,26,0.1); border-left: 5px solid #f6a820; padding-left: 4px;';
+        }
+        }
+        //console.log(tmpUserID);
+    }
+}
+
+(function() {
+
+    //GM_setValue('ksDarkVersion', '');
+    //노토산스 폰트 기본 로드(바로 적용 위함)
+    loadValue('ksDarkFontSize', '0');
+    loadValue('ksDarkNotyTime', '20');
+    loadValue('ksDarkNotySound', 'true');
+    loadValue('ksDarkBan', 'false');
+    loadValue('ksDarkThemeStyleSystem', 'true');
+    loadValue('ksDarkMention', 'false');
+
+    if (loadValue('ksDarkThemeStyleSystem', 'false') == 'true') {
+        GM_setValue('ksDarkThemeStyle', isSystemDark());
+    }
+
+    if (loadValue('ksDarkThemeStyle', '#40444b') == '#40444b') {
+        loadAdguardFilter();
+    } else {
+        GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh.png\'); } ');
+    }
+
+    loadValue('ksDarkNotyUse', 'T');
+
+    setFontSize();
+    initializeNotify();
+    getBanUsers();
+    loadEnhancedCSS();
+    addCustomFontSetting();
+    if (GM_getValue("ksDarkVersion", '') !== versionString) {
+        viewUpdate();
+        GM_setValue('ksDarkVersion', versionString);
+    }
+
+    loadSettingsV2();
 
     if (loadValue('ksDarkKillTeller', 'T') == 'T') {
-        setTimeout(() => killTellerChannel(), 1000);
+        setTimeout(() => killTellerChannel('none'), 1000);
     }
 
     setTimeout(() => addEnhancedMenu(), 1000);
+
+    setTimeout(() => getMyID(), 3000);
 
     setInterval(function() {
          if (GM_getValue('ksDarkNotyUse', '') == "T") {
@@ -555,7 +692,10 @@ function disableScroll() {
 
         hideRecommendFeed();
 
-
+        if (GM_getValue('ksDarkMention', '') == 'true') {
+            highlightComment();
+        }
+        
         if (currentPage != location.href) {
             currentPage = location.href;
             var url_parts = currentPage.split("/");
