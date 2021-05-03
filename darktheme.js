@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.21
+// @version      0.22
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -32,7 +32,7 @@
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.21(210502)';
+let versionString = '0.22(210503)';
 let myID = '';
 
 //Chrome GM_getValue / GM_setValue
@@ -84,7 +84,7 @@ function hideBannedUserComment() {
 
         if (banList.has(tmpBannedID) == true) {
             comments[i].parentElement.style.display = 'none';
-            i -= 1;
+            //i -= 1; <-- only for remove()
         }
     }
 }
@@ -182,7 +182,7 @@ function addCustomFontSetting() {
         + '<dt>스토리텔러/채널<br>버튼</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerNoKill" value="F"> <label for="ksDarkTellerNoKill">보이기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerKill" value="T"> <label for="ksDarkTellerKill">안보이기</label></div></div></dd>'
         + '<dt>디스코드 언급 스타일</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkmention" class="inp_radio _friendListExposure" id="ksDarkMention" value="true"> <label for="ksDarkMention">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkmention" class="inp_radio _friendListExposure" id="ksDarkNoMention" value="false"> <label for="ksDarkNoMention">사용안함</label></div></div></dd>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkmention" class="inp_radio _friendListExposure" id="ksDarkMention" value="true"> <label for="ksDarkMention">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkmention" class="inp_radio _friendListExposure" id="ksDarkNoMention" value="false"> <label for="ksDarkNoMention">사용안함</label></div></div>※사용자의 스토리에 최소 하나 이상의 글이 작성되어 있어야 정상 작동합니다.</dd>'
         //알림 알림기능
         + '<dt>스토리 알림 기능</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarknoty" class="inp_radio _friendListExposure" id="ksDarkNotyUse" value="T"> <label for="ksDarkNotyUse">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarknoty" class="inp_radio _friendListExposure" id="ksDarkNotyNotUse" value="F"> <label for="ksDarkNotyNotUse">사용안함</label></div></div></dd>'
@@ -468,6 +468,7 @@ function viewUpdate() {
             var updateNotice = document.createElement('div');
             updateNotice.id = 'updateNoticeLayer';
             updateNotice.className = 'cover _cover';
+            updateNotice.style.cssText = 'overflow-y: scroll;';
             document.body.appendChild(updateNotice);
             document.getElementById('updateNoticeLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="write cover_content cover_center" data-kant-group="wrt" data-part-name="view"><div class="_layerWrapper layer_write"><div class="section _dropZone account_modify"><div class="writing"><div class="inp_contents" data-part-name="editor"><strong class="subtit_modify subtit_enhanced">\' Enhanced 업데이트 내역</strong><div style="word-break: break-all">' + filter + '</div></div></div><div></div><div class="inp_footer"><div class="bn_group"> <a href="#" class="_postBtn btn_com btn_or" id="ksdarkUpdateNoticeOK"><em>알겠어용</em></a></div></div></div></div><div></div></div></div>';
             disableScroll();
@@ -635,10 +636,21 @@ function highlightComment() {
     }
 }
 
+function strToHTML() {
+    var articles = document.getElementsByClassName("fd_cont _contentWrapper");
+    //console.log(articles.length);
+    for (var i = 0; i < articles.length; i++) {
+        var htmlStr = articles[i].getElementsByClassName("txt_wrap")[0].getElementsByClassName("_content")[0].textContent;
+        //console.log(htmlStr.substring(15).toUpperCase());
+        if (htmlStr.substring(0, 15).toUpperCase() == '<!DOCTYPE HTML>') {
+            document.getElementsByClassName("fd_cont _contentWrapper")[i].getElementsByClassName("txt_wrap")[0].getElementsByClassName("_content")[0].innerHTML = htmlStr.substring(15);
+        }
+    }
+}
+
 (function() {
 
     //GM_setValue('ksDarkVersion', '');
-    //노토산스 폰트 기본 로드(바로 적용 위함)
     loadValue('ksDarkFontSize', '0');
     loadValue('ksDarkNotyTime', '20');
     loadValue('ksDarkNotySound', 'true');
@@ -691,11 +703,12 @@ function highlightComment() {
         }
 
         hideRecommendFeed();
+        //strToHTML();
 
         if (GM_getValue('ksDarkMention', '') == 'true') {
             highlightComment();
         }
-        
+
         if (currentPage != location.href) {
             currentPage = location.href;
             var url_parts = currentPage.split("/");
