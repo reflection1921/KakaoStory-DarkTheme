@@ -646,3 +646,13 @@ body { color: #dcddde !important; }
 .__tablet__ .snb_profile .wrap_thumb, .desktop_s .snb_profile .wrap_thumb { border-bottom: 1px solid #202225 !important; }
 .__tablet__ .util_menu, .desktop_s .util_menu { border-bottom: 1px solid #202225 !important; }
 .__tablet__ .mystory_menu, .desktop_s .mystory_menu { border-bottom: 1px solid #202225 !important; }
+.section .wrap_reshare .link_reshare { border-top: 1px solid #202225 !important; }
+.section .wrap_reshare .link_reshare { background-color: #202225 !important; }
+.section .wrap_reshare .link_reshare { color: #7289da !important; }
+.result_search .search_none .txt_searchnone { color: #dcddde !important; }
+.result_search .dimmed_layer { background-color: #36393f !important; }
+.result_search .result_wrap .inner_tabcont { background-color: #36393f !important; }
+.result_search .search_none { border-top: 1px solid #36393f !important; }
+.result_search .cate_tab:first-child .tit_cate { border-color: #36393f !important; }
+.result_search .list_cate .on .link_cate { background-color: #202225 !important; }
+.add_bot .feel_group ul li.more a { color: #dcddde !important; }

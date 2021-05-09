@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.22
+// @version      0.23
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
 // @downloadURL  https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.js
 // @updateURL    https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/darktheme.js
+// @require      https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js
 // @grant        GM_addStyle
 // @grant        GM_notification
 // ==/UserScript==
@@ -32,8 +33,13 @@
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.22(210503)';
+let versionString = '0.23(210510)';
 let myID = '';
+let konami = [38,38,40,40,37,39,37,39,66,65];
+let konamiCount = 0;
+let shakeEaster = false;
+
+unsafeWindow.getFriends = getFriends;
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -108,6 +114,31 @@ function getBanUsers() {
         }
     }
     xmlHttp.open("GET", "https://story.kakao.com/a/bans");
+    xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
+    xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
+    xmlHttp.setRequestHeader("Accept", "application/json");
+    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xmlHttp.send();
+}
+
+function saveText(str, fileName) {
+    var blob = new Blob([str], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, fileName);
+}
+
+function getFriends() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var friendsText = '';
+            var jsonFriends = JSON.parse(xmlHttp.responseText);
+            for (var i = 0; i < jsonFriends.profiles.length; i ++) {
+                friendsText = friendsText + String(jsonFriends.profiles[i]["display_name"]) + " : " + String(jsonFriends.profiles[i]["id"]) + '\n';
+            }
+            saveText(friendsText, "친구목록백업.txt");
+        }
+    }
+    xmlHttp.open("GET", "https://story.kakao.com/a/friends");
     xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
     xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
     xmlHttp.setRequestHeader("Accept", "application/json");
@@ -198,8 +229,10 @@ function addCustomFontSetting() {
         + '<dt>로고 숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div>※해당 기능을 사용하면 카카오스토리 로고가 삭제되고, 파비콘 및 타이틀이 네이버로 변경됩니다.</dd>'
         + '<dt>이미지 숨기기</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp" style="display:none"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkDelImage" value="nothing" disabled> <label for="ksDarkDelImage">삭제</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
-          //다크테마 정보 보여주기
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
+        + '<dt>친구 목록 백업</dt>'
+        + '<dd><div class="btn_area"><a class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkBackupFriend"><em>텍스트 파일로 저장</em></a></div>※스크립트 특성상 다른 이름으로 링크 저장을 사용할 수 없습니다.</dd>'
+        //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
         + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
           //Apply
@@ -334,6 +367,10 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarkhideimage"]',function(){
         GM_setValue("ksDarkImageView", $('[name="open_ksdarkhideimage"]:checked').val());
+    });
+
+    $('body').on('click', '#ksdarkBackupFriend', function() {
+        getFriends();
     });
 
     $('body').on('click', '#ksdarkApplyCustom', function() {
@@ -513,6 +550,32 @@ $(document).ready(function(){
         }
     });
 
+    GM_addStyle("@keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }");
+    GM_addStyle(".shake_text { animation: shake 0.5s; animation-iteration-count: infinite; }");
+
+    document.addEventListener('keydown', function(e) {
+        if (e.keyCode == konami[konamiCount]) {
+            konamiCount++;
+            if (konamiCount >= 10) {
+                konamiCount = 0;
+                shakeEaster = (shakeEaster ? false : true);
+            }
+        } else {
+            konamiCount = 0;
+        }
+    });
+
+    $(document).on('keydown', '._editable', function() {
+        if (shakeEaster == true) {
+            $('div[data-part-name="writing"]').addClass("shake_text");
+        }
+
+    });
+
+    $(document).on('keyup', '._editable', function() {
+        $('div[data-part-name="writing"]').removeClass("shake_text");
+    });
+
 });
 
 //파비콘, 타이틀 네이버로 변경
@@ -649,8 +712,8 @@ function strToHTML() {
 }
 
 (function() {
-
     //GM_setValue('ksDarkVersion', '');
+
     loadValue('ksDarkFontSize', '0');
     loadValue('ksDarkNotyTime', '20');
     loadValue('ksDarkNotySound', 'true');
@@ -675,6 +738,7 @@ function strToHTML() {
     getBanUsers();
     loadEnhancedCSS();
     addCustomFontSetting();
+    //업데이트 내역 표시
     if (GM_getValue("ksDarkVersion", '') !== versionString) {
         viewUpdate();
         GM_setValue('ksDarkVersion', versionString);
