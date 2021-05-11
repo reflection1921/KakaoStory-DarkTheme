@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.23
+// @version      0.24
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -33,7 +33,7 @@
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.23(210510)';
+let versionString = '0.24(210512)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -692,8 +692,9 @@ function highlightComment() {
         for ( var j = 0; j < tmpComment.length; j++) {
             var tmpUserID = tmpComment[j].getAttribute("data-id");
             if (myID == tmpUserID) {
-            comments[i].parentElement.style.cssText = 'background-color: rgba(250,166,26,0.1); border-left: 5px solid #f6a820; padding-left: 4px;';
-        }
+                tmpComment[j].style.cssText = "background-color:rgba(0,0,0,0) !important;";
+                comments[i].parentElement.style.cssText = 'background-color: rgba(250,166,26,0.1); border-left: 5px solid #f6a820; padding-left: 4px;';
+            }
         }
         //console.log(tmpUserID);
     }
