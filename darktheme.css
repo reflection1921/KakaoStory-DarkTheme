@@ -656,3 +656,18 @@ body { color: #dcddde !important; }
 .result_search .cate_tab:first-child .tit_cate { border-color: #36393f !important; }
 .result_search .list_cate .on .link_cate { background-color: #202225 !important; }
 .add_bot .feel_group ul li.more a { color: #dcddde !important; }
+.box_feedback { background-color: #36393f !important; }
+.box_feedback { box-shadow: 0 0px 0 rgb(0 0 0 / 10%) !important; }
+.box_feedback { -webkit-box-shadow: 0 0px 0 rgb(0 0 0 / 10%) !important; }
+.box_feedback .btn_feedback { color: #dcddde !important; }
+.box_feedback .tit_feedback { color: #fff !important; }
+.box_feedback .list_feedback { border-top: 1px solid #18191c !important; }
+.box_feedback .list_feedback li { border-top: 0px !important; }
+.add_top .btn_follow { border-color: #2f3136 !important; }
+.add_top .btn_follow { background-color: #2f3136 !important; }
+.add_top .btn_follow { color: #dcddde !important; }
+.story_widgets .link_edit { color: #7289da !important; }
+.kakao_emoticon img { background-color: rgba(255,255,255,0.6) !important; }
+.kakao_emoticon img { border-radius: 25px !important; }
+.write .inp_contents .sticon { background-color: rgba(255,255,255,0.6) !important; }
+.write .inp_contents .sticon { border-radius: 25px !important; }

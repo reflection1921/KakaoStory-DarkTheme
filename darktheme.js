@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.24
+// @version      0.25
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -28,18 +28,17 @@
    ksDarkImageView : 이미지 숨길건지
    ksDarkThemeStyleSystem : 시스템 테마가 시스템 따라갈거임?
    ksDarkMention : 디코스타일 멘션 쓸거냐?
+   ksDarkDownloadVideo : 동영상 다운로드 버튼 활성화 여부
 */
 
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.24(210512)';
+let versionString = '0.25(210519)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
 let shakeEaster = false;
-
-unsafeWindow.getFriends = getFriends;
 
 //Chrome GM_getValue / GM_setValue
 function GM_getValue(key, def) {
@@ -126,12 +125,12 @@ function saveText(str, fileName) {
     saveAs(blob, fileName);
 }
 
-function getFriends() {
+function saveFriends() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            var friendsText = '';
             var jsonFriends = JSON.parse(xmlHttp.responseText);
+            var friendsText = '';
             for (var i = 0; i < jsonFriends.profiles.length; i ++) {
                 friendsText = friendsText + String(jsonFriends.profiles[i]["display_name"]) + " : " + String(jsonFriends.profiles[i]["id"]) + '\n';
             }
@@ -139,6 +138,80 @@ function getFriends() {
         }
     }
     xmlHttp.open("GET", "https://story.kakao.com/a/friends");
+    xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
+    xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
+    xmlHttp.setRequestHeader("Accept", "application/json");
+    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xmlHttp.send();
+}
+
+//게시글 전체 삭제(아직 구현 안됨)
+function deleteArticlesConfirm() {
+    var deleteLayer = document.createElement('div');
+    deleteLayer.id = "deleteLayer";
+    deleteLayer.className = "cover _cover";
+    document.body.appendChild(deleteLayer);
+    document.getElementById('deleteLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="toast_popup cover_content cover_center" tabindex="-1" style="top: 436px; margin-left: -170px;"><div class="inner_toast_layer _toastBody"><p class="txt _dialogText">정말 게시글을 전체 삭제하시겠습니까?</p><div class="btn_group"><a href="#" class="btn_com btn_wh _dialogCancel _dialogBtn" id="deleteArticlesConfirmCloseA"><span>취소</span></a><a href="#" class="btn_com btn_or _dialogOk _dialogBtn" id="deleteArticlesConfirmOK"><span>확인</span></a> </div></div></div></div>';
+}
+
+//친구 전체 삭제 관련
+function deleteFriendsConfirm() {
+    var deleteLayer = document.createElement('div');
+    deleteLayer.id = "deleteLayer";
+    deleteLayer.className = "cover _cover";
+    document.body.appendChild(deleteLayer);
+    document.getElementById('deleteLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="toast_popup cover_content cover_center" tabindex="-1" style="top: 436px; margin-left: -170px;"><div class="inner_toast_layer _toastBody"><p class="txt _dialogText">정말 친구를 전체 삭제하시겠습니까?<br>취소하시려면 새로고침해야 합니다.</p><div class="btn_group"><a href="#" class="btn_com btn_wh _dialogCancel _dialogBtn" id="deleteFriendConfirmCloseA"><span>취소</span></a><a href="#" class="btn_com btn_or _dialogOk _dialogBtn" id="deleteFriendConfirmOK"><span>확인</span></a> </div></div></div></div>';
+}
+
+function loadForDeleteFriends() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            jsonMyFriends = JSON.parse(xmlHttp.responseText);
+
+            var deleteCountLayer = document.createElement('div');
+            deleteCountLayer.id = "deleteCountLayer";
+            deleteCountLayer.className = "cover _cover";
+            document.body.appendChild(deleteCountLayer);
+            document.getElementById('deleteCountLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="toast_popup cover_content cover_center" tabindex="-1" style="top: 436px; margin-left: -170px;"><div class="inner_toast_layer _toastBody"><p class="txt _dialogText" id="deleteFriendText">친구 삭제 중... (0 / 0)</p><div>※정책상 삭제 속도는 느리게 설정되었습니다.<br>취소하시려면 새로고침 하세요.</div><div class="btn_group"><a href="#" class="btn_com btn_or _dialogOk _dialogBtn" id="deleteFriendComplete" style="display: none;"><span>확인</span></a> </div></div></div></div>';
+
+            deleteFriends();
+        }
+    }
+    xmlHttp.open("GET", "https://story.kakao.com/a/friends");
+    xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
+    xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
+    xmlHttp.setRequestHeader("Accept", "application/json");
+    xmlHttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xmlHttp.send();
+}
+
+var delFCount = 0;
+var jsonMyFriends;
+
+function deleteFriends() {
+    setTimeout(function() {
+        if (delFCount < jsonMyFriends.profiles.length) {
+            deleteFriend(jsonMyFriends.profiles[delFCount]["id"]);
+            document.getElementById('deleteFriendText').innerHTML = '친구 삭제 중... (' + (delFCount + 1) + ' / ' + jsonMyFriends.profiles.length + ')';
+            delFCount++;
+            deleteFriends();
+        } else {
+            document.getElementById('deleteFriendText').innerHTML = '전체 삭제 완료';
+            document.getElementById('deleteFriendComplete').style.display = 'block';
+        }
+    }, 750);
+}
+
+function deleteFriend(userid) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            //ALLDONE
+            console.log("DELETE HERE");
+        }
+    }
+    xmlHttp.open("DELETE", "https://story.kakao.com/a/friends/" + userid);
     xmlHttp.setRequestHeader("x-kakao-apilevel", "49");
     xmlHttp.setRequestHeader("x-kakao-deviceinfo", "web:d;-;-");
     xmlHttp.setRequestHeader("Accept", "application/json");
@@ -230,8 +303,12 @@ function addCustomFontSetting() {
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div>※해당 기능을 사용하면 카카오스토리 로고가 삭제되고, 파비콘 및 타이틀이 네이버로 변경됩니다.</dd>'
         + '<dt>이미지 숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
+        + '<dt>동영상 다운로드</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadEnable" value="enable"> <label for="ksDarkDownloadEnable">활성화</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadDisable" value="disable"> <label for="ksDarkDownloadDisable">비활성화</label></div></div>※해당 기능을 사용하면 국내 저작권법에 동의하시는 것입니다.<br>다운로드 하신 영상은 저작자의 동의가 없는 한 개인소장만 가능합니다.</dd>'
         + '<dt>친구 목록 백업</dt>'
-        + '<dd><div class="btn_area"><a class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkBackupFriend"><em>텍스트 파일로 저장</em></a></div>※스크립트 특성상 다른 이름으로 링크 저장을 사용할 수 없습니다.</dd>'
+        + '<dd><div class="btn_area"><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkBackupFriend"><em>텍스트 파일로 저장</em></a></div>※스크립트 특성상 다른 이름으로 링크 저장을 사용할 수 없습니다.</dd>'
+        + '<dt>부가 기능</dt>'
+        + '<dd><div class="btn_area"><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkDeleteAllFriend"><em>친구 전체 삭제</em></a><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important; display: none;" id="ksdarkDeleteAllArticles"><em>게시글 전체 삭제</em></a></div>※시작하면 되돌릴 수 없으며 도중 취소를 원하면 새로고침해야 합니다.</dd>'
         //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
         + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
@@ -304,6 +381,12 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkVisibleImage").checked = true;
     }
 
+    if (GM_getValue('ksDarkDownloadVideo', '') == "enable") {
+        document.getElementById("ksDarkDownloadEnable").checked = true;
+    } else {
+        document.getElementById("ksDarkDownloadDisable").checked = true;
+    }
+
     $(document).on("change",'input[name="open_font1"]',function(){
         var fontName = $('[name="open_font1"]:checked').val();
         if (fontName == 'Custom') {
@@ -369,8 +452,20 @@ function addCustomFontSetting() {
         GM_setValue("ksDarkImageView", $('[name="open_ksdarkhideimage"]:checked').val());
     });
 
+    $(document).on("change",'input[name="open_ksdarkdownloadvideo"]',function(){
+        GM_setValue("ksDarkDownloadVideo", $('[name="open_ksdarkdownloadvideo"]:checked').val());
+    });
+
     $('body').on('click', '#ksdarkBackupFriend', function() {
-        getFriends();
+        saveFriends();
+    });
+
+    $('body').on('click', '#ksdarkDeleteAllFriend', function() {
+        deleteFriendsConfirm();
+    });
+
+    $('body').on('click', '#ksdarkDeleteAllArticles', function() {
+        deleteArticlesConfirm();
     });
 
     $('body').on('click', '#ksdarkApplyCustom', function() {
@@ -403,6 +498,7 @@ function changeTheme() {
 
 function changeDark() {
     loadAdguardFilter();
+    GM_setValue('ksDarkThemeStyle', '#40444b');
     GM_addStyle('._ksdark_cls { background-color: ' + loadValue('ksDarkThemeStyle', '#40444b')+ ' !important; }');
 }
 
@@ -410,7 +506,9 @@ function changeLight() {
     $('style').remove();
     setFontSize();
     loadSettingsV2();
+    GM_setValue('ksDarkThemeStyle', '#ffffff');
     GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh.png\'); } ');
+    GM_addStyle('._ksdark_cls { background-color: ' + loadValue('ksDarkThemeStyle', '#40444b')+ ' !important; }');
 }
 
 function setNotify(content, title_, url) {
@@ -515,7 +613,7 @@ function viewUpdate() {
             });
         }
     }
-    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/update_notice.html");
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/update_notice_new.html");
     xmlHttp.send();
 
 }
@@ -565,7 +663,7 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('keydown', '._editable', function() {
+    $(document).on('keydown', '._editable', function(e) {
         if (shakeEaster == true) {
             $('div[data-part-name="writing"]').addClass("shake_text");
         }
@@ -576,7 +674,32 @@ $(document).ready(function(){
         $('div[data-part-name="writing"]').removeClass("shake_text");
     });
 
+    /*친구 전체 삭제 관련 이벤트*/
+    $('body').on('click', '#deleteFriendComplete', function() {
+        document.getElementById("deleteCountLayer").remove();
+    });
+
+    $('body').on('click', '#deleteFriendConfirmCloseA', function() {
+        document.getElementById("deleteLayer").remove();
+    });
+
+    $('body').on('click', '#deleteFriendConfirmOK', function() {
+        document.getElementById("deleteLayer").remove();
+        loadForDeleteFriends();
+    });
+
+    $('body').on('click', '#deleteArticlesConfirmCloseA', function() {
+        document.getElementById("deleteLayer").remove();
+    });
+
+    $('body').on('click', '#deleteArticlesConfirmOK', function() {
+        document.getElementById("deleteLayer").remove();
+        //loadForDeleteFriends();
+    });
+
 });
+
+
 
 //파비콘, 타이틀 네이버로 변경
 function hideLogo() {
@@ -598,7 +721,7 @@ function loadValue(valueID, defaultValue) {
 }
 
 function addEnhancedMenu() {
-    document.getElementsByClassName("menu_util")[0].innerHTML = '<li><a id="ksdarkEnhancedOpen" class="link_menu _btnSettingProfile">Enhanced 설정</a></li>' + document.getElementsByClassName("menu_util")[0].innerHTML;
+    document.getElementsByClassName("menu_util")[0].innerHTML = '<li><a href="#" id="ksdarkEnhancedOpen" class="link_menu _btnSettingProfile">Enhanced 설정</a></li>' + document.getElementsByClassName("menu_util")[0].innerHTML;
     $('body').on('click', '#ksdarkEnhancedOpen', function() {
         document.getElementById("enhancedLayer").style.display = 'block';
         $('html,body').scrollTop(0);
@@ -712,6 +835,23 @@ function strToHTML() {
     }
 }
 
+function addDownloadVideo() {
+    var videoControl = document.getElementsByClassName("mejs-controls");
+    for (var i = 0; i < videoControl.length; i++) {
+        var checkDownExists = videoControl[i].getElementsByClassName("mejs-button mejs-videodown-button");
+        //console.log(checkDownExists.length);
+        if (checkDownExists.length == 0) {
+            var videourl = videoControl[i].parentElement.getElementsByClassName("mejs-mediaelement")[0].getElementsByClassName("mejs-kakao")[0].getAttribute("src");
+            //videourl = replaceAll(videourl, "m2.mp4", "m1.mp4");
+            var downloadElement = document.createElement('div');
+            downloadElement.id = 'videodown';
+            downloadElement.className = 'mejs-button mejs-videodown-button';
+            videoControl[i].appendChild(downloadElement);
+            videoControl[i].getElementsByClassName("mejs-button mejs-videodown-button")[0].innerHTML = '<button type="button" aria-controls="mep_2" title="Download" onclick="window.open(\'' + videourl + '\')" aria-label="Download"></button>';
+        }
+    }
+}
+
 (function() {
     //GM_setValue('ksDarkVersion', '');
 
@@ -721,6 +861,7 @@ function strToHTML() {
     loadValue('ksDarkBan', 'false');
     loadValue('ksDarkThemeStyleSystem', 'true');
     loadValue('ksDarkMention', 'false');
+    loadValue('ksDarkDownloadVideo', 'disable');
 
     if (loadValue('ksDarkThemeStyleSystem', 'false') == 'true') {
         GM_setValue('ksDarkThemeStyle', isSystemDark());
@@ -755,6 +896,16 @@ function strToHTML() {
 
     setTimeout(() => getMyID(), 3000);
 
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button { top: -42px !important; } ");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button { left: 14px !important; } ");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button { width: 42px !important; } ");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button { height: 42px !important; } ");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button button { width: 18px !important; }");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button button { height: 18px !important; }");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button button { background: url(https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/btn_download.png) !important; }");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button button { margin: 10px 6px !important; }");
+    GM_addStyle(".mejs-container.mejs-kakao .mejs-controls .mejs-videodown-button button { padding: 0 !important; }");
+
     setInterval(function() {
          if (GM_getValue('ksDarkNotyUse', '') == "T") {
              notyTimeCount += 1;
@@ -772,6 +923,10 @@ function strToHTML() {
 
         if (GM_getValue('ksDarkMention', '') == 'true') {
             highlightComment();
+        }
+
+        if (GM_getValue('ksDarkDownloadVideo', '') == 'enable') {
+            addDownloadVideo();
         }
 
         if (currentPage != location.href) {
