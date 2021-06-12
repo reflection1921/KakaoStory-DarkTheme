@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.25
+// @version      0.26
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -34,7 +34,8 @@
 let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
-let versionString = '0.25(210519)';
+let banStringArr = new Array();
+let versionString = '0.26(210612)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -89,6 +90,25 @@ function hideBannedUserComment() {
 
         if (banList.has(tmpBannedID) == true) {
             comments[i].parentElement.style.display = 'none';
+            //i -= 1; <-- only for remove()
+        }
+    }
+}
+
+function hideBannedStringComment() {
+    var articles = document.getElementsByClassName("txt_wrap");
+    for (var i = 0; i < articles.length; i++) {
+        var articleText = articles[i].innerText;
+
+        for (var j = 0; j < banStringArr.length; j++) {
+            if (articleText.includes(banStringArr[j])) {
+                if (articles[i].parentElement.className.toString().includes("share_wrap")) {
+                    articles[i].parentElement.parentElement.parentElement.parentElement.parentElement.style.display = 'none';
+                } else {
+                    articles[i].parentElement.parentElement.parentElement.style.display = 'none';
+                }
+                continue;
+            }
             //i -= 1; <-- only for remove()
         }
     }
@@ -163,6 +183,16 @@ function deleteFriendsConfirm() {
     document.getElementById('deleteLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="toast_popup cover_content cover_center" tabindex="-1" style="top: 436px; margin-left: -170px;"><div class="inner_toast_layer _toastBody"><p class="txt _dialogText">정말 친구를 전체 삭제하시겠습니까?<br>취소하시려면 새로고침해야 합니다.</p><div class="btn_group"><a href="#" class="btn_com btn_wh _dialogCancel _dialogBtn" id="deleteFriendConfirmCloseA"><span>취소</span></a><a href="#" class="btn_com btn_or _dialogOk _dialogBtn" id="deleteFriendConfirmOK"><span>확인</span></a> </div></div></div></div>';
 }
 
+//문자열 차단 관련
+function killBanString() {
+    var deleteLayer = document.createElement('div');
+    deleteLayer.id = "banStringLayer";
+    deleteLayer.className = "cover _cover";
+    document.body.appendChild(deleteLayer);
+    document.getElementById('banStringLayer').innerHTML = '<div class="dimmed dimmed50" style="z-index: 201;"></div><div class="cover_wrapper" style="z-index: 201;"><div class="dim_ly cover_content cover_center" data-kant-group="msg.w"><div class="ly_con message" style="top:84px"><div class="_container box_writing"><fieldset><legend class="tit_message">문자열 차단</legend><div class="box_from _receiverWrap" data-model="c56736" data-part-name="receiver"><div class="_suggestionWrap friends_search" style="display: block;"><label class="_suggestionInputPlaceholder lab_from" for="messageReceiver">차단할 문자열을 한줄에 하나씩 입력하세요.</label></div></div><div class="box_write color_11" data-model="c56736" data-part-name="writing"><div class="editable"><span class="write_edit" style="top: 162px;"><textarea class="tf_write _texxtarea" id="textbanstring" style="font-size: 22px; line-height: 26px; height: 370px;"></textarea></span> <span class="edit_gap"></span></div></div><div class="box_media menu_on"><div class="bn_group"><a href="#" class="btn_com _sendMessage btn_or" id="ksdarkSaveBanString" data-kant-id="574"><em>저장</em></a></div></div><a href="#" class="link_close _hideWritingView" id="closeBanString"><span class="ico_ks ico_close">취소</span></a></fieldset></div></div></div></div>';
+    document.getElementById("textbanstring").value = GM_getValue('ksdarkBanString', '');
+}
+
 function loadForDeleteFriends() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -208,7 +238,7 @@ function deleteFriend(userid) {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             //ALLDONE
-            console.log("DELETE HERE");
+            //console.log("DELETE HERE");
         }
     }
     xmlHttp.open("DELETE", "https://story.kakao.com/a/friends/" + userid);
@@ -298,7 +328,9 @@ function addCustomFontSetting() {
         + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_notytime" value="' + GM_getValue('ksDarkNotyTime', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> 초마다 로드<br>※20초를 권장하며 이보다 더 짧게 설정하는 것은 권장하지 않습니다.</dd>'
           //강화된 차단
         + '<dt>강화된 차단 사용</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.</dd>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkBan" value="true"> <label for="ksDarkBan">사용</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkban" class="inp_radio _friendListExposure" id="ksDarkNoBan" value="false"> <label for="ksDarkNoBan">미사용</label></div></div>※해당 기능을 사용하면 차단한 유저의 댓글이 어느 게시글에서도 보이지 않습니다.<br>문자열 차단 기능도 함께 적용됩니다.</dd>'
+        + '<dt>문자열 차단</dt>'
+        + '<dd><div class="btn_area"><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkStringKill"><em>차단할 문자열 등록</em></a></div>※해당 기능을 사용하면 등록한 문자열이 있는 글은 보이지 않습니다.</dd>'
         + '<dt>로고 숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div>※해당 기능을 사용하면 카카오스토리 로고가 삭제되고, 파비콘 및 타이틀이 네이버로 변경됩니다.</dd>'
         + '<dt>이미지 숨기기</dt>'
@@ -466,6 +498,10 @@ function addCustomFontSetting() {
 
     $('body').on('click', '#ksdarkDeleteAllArticles', function() {
         deleteArticlesConfirm();
+    });
+
+    $('body').on('click', '#ksdarkStringKill', function() {
+        killBanString();
     });
 
     $('body').on('click', '#ksdarkApplyCustom', function() {
@@ -697,9 +733,33 @@ $(document).ready(function(){
         //loadForDeleteFriends();
     });
 
+    $('body').on('click', '#closeBanString', function() {
+        document.getElementById("banStringLayer").remove();
+    });
+
+    $('body').on('click', '#ksdarkSaveBanString', function() {
+        var banStrings = document.getElementById("textbanstring").value;
+        GM_setValue('ksdarkBanString', banStrings);
+        createBanStringArr();
+        document.getElementById("banStringLayer").remove();
+    });
+
 });
 
-
+function createBanStringArr() {
+    var banStrings = GM_getValue('ksdarkBanString', '').split("\n");
+    var banStringList = new Set();
+    for (var i = 0; i < banStrings.length; i++) {
+        if (banStrings[i] == "") {
+            continue;
+        } else {
+            banStringList.add(banStrings[i]);
+            //console.log(banStrings[i]);
+       }
+    }
+    banStringArr = Array.from(banStringList);
+    //console.log(banStringArr[0]);
+}
 
 //파비콘, 타이틀 네이버로 변경
 function hideLogo() {
@@ -880,6 +940,7 @@ function addDownloadVideo() {
     getBanUsers();
     loadEnhancedCSS();
     addCustomFontSetting();
+    createBanStringArr();
     //업데이트 내역 표시
     if (GM_getValue("ksDarkVersion", '') !== versionString) {
         viewUpdate();
@@ -916,6 +977,7 @@ function addDownloadVideo() {
          }
         if (GM_getValue('ksDarkBan', '') == "true") {
             hideBannedUserComment();
+            hideBannedStringComment();
         }
 
         hideRecommendFeed();
