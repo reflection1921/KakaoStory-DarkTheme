@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.27
+// @version      0.28
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -35,7 +35,7 @@ let currentPage = '';
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.27(210612)';
+let versionString = '0.28(210612)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -98,10 +98,10 @@ function hideBannedUserComment() {
 function hideBannedStringComment() {
     var articles = document.getElementsByClassName("txt_wrap");
     for (var i = 0; i < articles.length; i++) {
-        var articleText = articles[i].innerText.toLowerCase();
+        var articleText = articles[i].innerText;
 
         for (var j = 0; j < banStringArr.length; j++) {
-            if (articleText.includes(banStringArr[j]).toLowerCase()) {
+            if (articleText.includes(banStringArr[j])) {
                 if (articles[i].parentElement.className.toString().includes("share_wrap")) {
                     articles[i].parentElement.parentElement.parentElement.parentElement.parentElement.style.display = 'none';
                 } else {
