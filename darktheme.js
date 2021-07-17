@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.28
+// @version      0.30
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -32,10 +32,11 @@
 */
 
 let currentPage = '';
+let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.28(210612)';
+let versionString = '0.30(210717)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -96,12 +97,15 @@ function hideBannedUserComment() {
 }
 
 function hideBannedStringComment() {
+    if (unlockBannedString == true) {
+        return;
+    }
     var articles = document.getElementsByClassName("txt_wrap");
     for (var i = 0; i < articles.length; i++) {
-        var articleText = articles[i].innerText;
+        var articleText = articles[i].innerText.toLowerCase();
 
         for (var j = 0; j < banStringArr.length; j++) {
-            if (articleText.includes(banStringArr[j])) {
+            if (articleText.includes(banStringArr[j].toLowerCase())) {
                 if (articles[i].parentElement.className.toString().includes("share_wrap")) {
                     articles[i].parentElement.parentElement.parentElement.parentElement.parentElement.style.display = 'none';
                 } else {
@@ -649,7 +653,7 @@ function viewUpdate() {
             });
         }
     }
-    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/update_notice_new.html");
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/update_notice_new2.html");
     xmlHttp.send();
 
 }
@@ -676,6 +680,10 @@ $(document).ready(function(){
         var userIdx = $('a[data-kant-id="845"]').index(this);
         var userID = $('a[data-kant-id="844"]').eq(userIdx).parent().attr('data-model');
         banList.delete(userID);
+    });
+
+    $(document).on('click', 'a[data-kant-id="119"]', function(e) {
+        e.target.parentNode.parentNode.getElementsByClassName("txt_wrap")[0].getElementsByClassName("_content")[0].style.cssText = "height: -1;";
     });
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
@@ -895,6 +903,14 @@ function strToHTML() {
     }
 }
 
+function detailViewNotFriend() {
+    var detail = document.getElementsByClassName("_btnViewDetailInShare");
+    for (var i = 0; i < detail.length; i++) {
+        detail[i].href = "javascript:void(0);";
+        detail[i].className = "_btnViewDetailXXXXXX";
+    }
+}
+
 function addDownloadVideo() {
     var videoControl = document.getElementsByClassName("mejs-controls");
     for (var i = 0; i < videoControl.length; i++) {
@@ -982,6 +998,7 @@ function addDownloadVideo() {
 
         hideRecommendFeed();
         //strToHTML();
+        detailViewNotFriend();
 
         if (GM_getValue('ksDarkMention', '') == 'true') {
             highlightComment();
