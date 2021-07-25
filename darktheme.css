@@ -690,3 +690,6 @@ body { color: var(--text-color) !important; }
 .write .inp_contents .sticon { background-color: rgba(255,255,255,0.6) !important; }
 .write .inp_contents .sticon { border-radius: 25px !important; }
 .friend_cate_top .catetab_up .tit_cate { border-top: 1px solid rgba(255, 255, 255, 0) !important; }
+.section_birth .link_name { color: var(--text-color) !important; }
+.section_birth .tit_birth { color: var(--text-highlight-color) !important; }
+.section_birth .box_birth { color: var(--background-border-color) !important; }
