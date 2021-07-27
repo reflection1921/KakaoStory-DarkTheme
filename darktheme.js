@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.31
+// @version      0.32
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -36,7 +36,7 @@ let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.31(210725)';
+let versionString = '0.32(210728)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -906,8 +906,8 @@ function strToHTML() {
 function detailViewNotFriend() {
     var detail = document.getElementsByClassName("_btnViewDetailInShare");
     for (var i = 0; i < detail.length; i++) {
-        detail[i].href = "javascript:void(0);";
-        detail[i].className = "time _btnViewDetailNotFriend";
+        detail[i].href = "javascript:space.Router.navigate('https://story.kakao.com/')";
+        detail[i].className = "time _btnViewDetailInSharX";
     }
 }
 
@@ -998,7 +998,7 @@ function addDownloadVideo() {
 
         hideRecommendFeed();
         //strToHTML();
-        detailViewNotFriend();
+        //detailViewNotFriend();
 
         if (GM_getValue('ksDarkMention', '') == 'true') {
             highlightComment();
