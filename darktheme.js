@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.32
+// @version      0.33
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -36,7 +36,7 @@ let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.32(210728)';
+let versionString = '0.33(210817)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -340,7 +340,7 @@ function addCustomFontSetting() {
         + '<dt>이미지 숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
         + '<dt>동영상 다운로드</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadEnable" value="enable"> <label for="ksDarkDownloadEnable">활성화</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadDisable" value="disable"> <label for="ksDarkDownloadDisable">비활성화</label></div></div>※해당 기능을 사용하면 국내 저작권법에 동의하시는 것입니다.<br>다운로드 하신 영상은 저작자의 동의가 없는 한 개인소장만 가능합니다.</dd>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadEnable" value="enable"> <label for="ksDarkDownloadEnable">활성화</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadDisable" value="disable"> <label for="ksDarkDownloadDisable">비활성화</label></div></div>※해당 기능을 사용하여 발생하는 책임은 사용자에게 있습니다.<br>다운로드 하신 영상은 국내 저작권법에 의거, 저작자의 동의가 없는 한 개인소장만 가능합니다.</dd>'
         + '<dt>친구 목록 백업</dt>'
         + '<dd><div class="btn_area"><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkBackupFriend"><em>텍스트 파일로 저장</em></a></div>※스크립트 특성상 다른 이름으로 링크 저장을 사용할 수 없습니다.</dd>'
         + '<dt>부가 기능</dt>'
@@ -752,6 +752,15 @@ $(document).ready(function(){
         document.getElementById("banStringLayer").remove();
     });
 
+     $('body').on('keydown', '#contents_write', function() {
+        //console.log(document.getElementById("contents_write").innerText);
+        var str = document.getElementById("contents_write").innerText;
+         if (str.charAt(str.length - 1) != "\n") {
+             //console.log("New Line!");
+             document.getElementById("contents_write").innerHTML += "<br><br>";
+         }
+    });
+
 });
 
 function createBanStringArr() {
@@ -928,6 +937,11 @@ function addDownloadVideo() {
     }
 }
 
+// function addTextNewLine() {
+//     console.log(document.getElementById("contents_write").innerHTML);
+//     document.getElementById("contents_write").innerHTML += "<br>";
+// }
+
 (function() {
     //GM_setValue('ksDarkVersion', '');
 
@@ -1007,6 +1021,8 @@ function addDownloadVideo() {
         if (GM_getValue('ksDarkDownloadVideo', '') == 'enable') {
             addDownloadVideo();
         }
+
+        //addTextNewLine();
 
         if (currentPage != location.href) {
             currentPage = location.href;
