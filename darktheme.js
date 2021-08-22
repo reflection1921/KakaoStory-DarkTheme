@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.33
+// @version      0.34
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -15,6 +15,7 @@
 /* 내부 설정 값
    ksDarkFontSize: 자체 폰트 크기 설정
    ksDarkThemeStyle: 테마 설정
+   ksDarkThemeType: 다크테마 속 구체적 테마 설정
    ksDarkCustomFontName: 사용자 설정 폰트 이름
    ksDarkCustomFontCss: 사용자 설정 폰트 CSS 파일
    ksDarkFontName: 폰트 설정 (현재 사용되지 않는 기능)
@@ -36,7 +37,7 @@ let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.33(210817)';
+let versionString = '0.34(210823)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -286,6 +287,23 @@ function killTellerChannel(val) {
     document.getElementsByClassName("group_gnb")[0].style.display = val;
 }
 
+function setDarkThemeType(typename) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var lines = xmlHttp.responseText.split("\n");
+            for (var i = 0; i < lines.length; i++) {
+                var variableName = lines[i].split(":")[0];
+                var variableValue = lines[i].split(": ")[1].split(";")[0];
+                document.documentElement.style.setProperty(variableName, variableValue);
+            }
+        }
+    }
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/css_variable_" + typename + ".css");
+    //xmlHttp.open("GET", "http://127.0.0.1/darkstyle/css_variable_" + typename + ".txt");
+    xmlHttp.send();
+}
+
 //전체 설정 추가
 function addCustomFontSetting() {
     //다크모드 설정 웹 HTML 설정용
@@ -315,7 +333,9 @@ function addCustomFontSetting() {
         + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_css_url" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd>'
           //다크테마 설정
         + '<dt>테마 설정</dt>'
-        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeWhite" value="#ffffff"> <label for="ksDarkThemeWhite">Light Mode</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeDark" value="#40444b"> <label for="ksDarkThemeDark">Discord Dark Mode</label></div></div><div><input type="checkbox" class="inp_radio _friendListExposure" name="ksdarkusesystemtheme" id="ksDarkSystemTheme"> <label for="ksDarkSystemTheme">내 PC의 테마 따라가기</label></div></dd>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeWhite" value="#ffffff"> <label for="ksDarkThemeWhite">Light Mode</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkstyle1" class="inp_radio _friendListExposure" id="ksDarkThemeDark" value="#40444b"> <label for="ksDarkThemeDark">Dark Mode</label></div></div><div><input type="checkbox" class="inp_radio _friendListExposure" name="ksdarkusesystemtheme" id="ksDarkSystemTheme"> <label for="ksDarkSystemTheme">내 PC의 테마 따라가기</label></div></dd>'
+        + '<dt>다크테마 스타일</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkType" class="inp_radio _friendListExposure" id="ksDarkTypeDiscord" value="discord"> <label for="ksDarkTypeDiscord">Discord</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkType" class="inp_radio _friendListExposure" id="ksDarkTypeRed" value="darkred"> <label for="ksDarkTypeRed">Dark Red</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkType" class="inp_radio _friendListExposure" id="ksDarkTypeBlue" value="darkblue"> <label for="ksDarkTypeBlue">Dark Blue</label></div></div>※해당 기능은 실험적인 기능이며, 다크모드를 활성화 해야 정상적으로 적용됩니다.</dd>'
           //스토리 텔러, 채널 버튼 삭제 설정
         + '<dt>스토리텔러/채널<br>버튼</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerNoKill" value="F"> <label for="ksDarkTellerNoKill">보이기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarktellerkill" class="inp_radio _friendListExposure" id="ksDarkTellerKill" value="T"> <label for="ksDarkTellerKill">안보이기</label></div></div></dd>'
@@ -347,7 +367,7 @@ function addCustomFontSetting() {
         + '<dd><div class="btn_area"><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkDeleteAllFriend"><em>친구 전체 삭제</em></a><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important; display: none;" id="ksdarkDeleteAllArticles"><em>게시글 전체 삭제</em></a></div>※시작하면 되돌릴 수 없으며 도중 취소를 원하면 새로고침해야 합니다.</dd>'
         //다크테마 정보 보여주기
         + '<dt>다크테마 정보</dt>'
-        + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
+        + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile" data-kant-id="516">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
           //Apply
         + '</dl>'
         + '<div class="inp_footer"><div class="bn_group"><a href="#" class="_cancelBtn btn_com btn_wh" id="ksdarkCancel"><em>취소</em></a> <a class="btn_com btn_or" id="ksdarkApplyCustom"><em>저장</em></a></div><div id="ksdarkSaveInfo">일부 설정은 새로고침 해야 반영됩니다.</div></div>'
@@ -359,6 +379,14 @@ function addCustomFontSetting() {
         document.getElementById("fontNanum").checked = true;
     } else {
         document.getElementById("fontCustom").checked = true;
+    }
+
+    if (GM_getValue('ksDarkThemeType', '') == "darkred") {
+        document.getElementById("ksDarkTypeRed").checked = true;
+    } else if (GM_getValue('ksDarkThemeType', '') == "darkblue") {
+        document.getElementById("ksDarkTypeBlue").checked = true;
+    } else {
+        document.getElementById("ksDarkTypeDiscord").checked = true;
     }
 
     if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
@@ -457,6 +485,11 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarknoty"]',function(){
         GM_setValue("ksDarkNotyUse", $('[name="open_ksdarknoty"]:checked').val());
+    });
+
+    $(document).on("change",'input[name="open_ksdarkType"]',function(){
+        GM_setValue("ksDarkThemeType", $('[name="open_ksdarkType"]:checked').val());
+        setDarkThemeType(loadValue('ksDarkThemeType', 'discord'));
     });
 
     $(document).on("change",'input[name="open_ksdarkhidelogo"]',function(){
@@ -937,13 +970,7 @@ function addDownloadVideo() {
     }
 }
 
-// function addTextNewLine() {
-//     console.log(document.getElementById("contents_write").innerHTML);
-//     document.getElementById("contents_write").innerHTML += "<br>";
-// }
-
 (function() {
-    //GM_setValue('ksDarkVersion', '');
 
     loadValue('ksDarkFontSize', '0');
     loadValue('ksDarkNotyTime', '20');
@@ -959,9 +986,11 @@ function addDownloadVideo() {
 
     if (loadValue('ksDarkThemeStyle', '#40444b') == '#40444b') {
         loadAdguardFilter();
+        setDarkThemeType(loadValue('ksDarkThemeType', 'discord'));
     } else {
         GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { background: url(\'https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/logo_kseh.png\'); } ');
     }
+
 
     loadValue('ksDarkNotyUse', 'T');
 
