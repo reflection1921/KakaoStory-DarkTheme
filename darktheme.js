@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.34
+// @version      0.35
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -37,7 +37,7 @@ let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.34(210823)';
+let versionString = '0.35(210823)';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -299,7 +299,7 @@ function setDarkThemeType(typename) {
             }
         }
     }
-    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/css_variable_" + typename + ".css");
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/css_variable_" + typename + ".txt");
     //xmlHttp.open("GET", "http://127.0.0.1/darkstyle/css_variable_" + typename + ".txt");
     xmlHttp.send();
 }
