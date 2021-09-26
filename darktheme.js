@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.35
+// @version      0.36
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -30,6 +30,7 @@
    ksDarkThemeStyleSystem : 시스템 테마가 시스템 따라갈거임?
    ksDarkMention : 디코스타일 멘션 쓸거냐?
    ksDarkDownloadVideo : 동영상 다운로드 버튼 활성화 여부
+   ksDarkHideHistory : 흑역사(과거추억) 안보이기
 */
 
 let currentPage = '';
@@ -37,7 +38,8 @@ let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.35(210823)';
+let versionString = '0.36(210927)';
+let cssVersion = 'CSS 업데이트 일자: ';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
 let konamiCount = 0;
@@ -83,6 +85,13 @@ function changeString() {
     replaceWordsByClassName('tit_story', '우리끼리', '편한친구');
     replaceWordsByClassName('ico_bestfriend_m _permissionPartOfFriends', '우리끼리보기', '편한친구공개');
     setAttributeByClassName('_permissionPartOfFriends', 'data-tooltip', '편한친구공개');
+}
+
+function hideOldHistory() {
+    var oldhistory = document.getElementsByClassName("section section_time");
+    for (var i = 0; i < oldhistory.length; i++) {
+        oldhistory[i].parentElement.style.display = 'none';
+    }
 }
 
 function hideBannedUserComment() {
@@ -327,7 +336,7 @@ function addCustomFontSetting() {
         + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_size_add" value="' + GM_getValue('ksDarkFontSize', '') + '" style="border: 0px; font-size: 13px; width: 30px; height: 16px; padding: 6px 8px;"> px 추가</dd>'
           //사용자 설정 폰트 이름
         + '<dt>사용자 설정 폰트명</dt>'
-        + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"></dd>'
+        + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_css_name" value="' + GM_getValue('ksDarkCustomFontName', '') + '" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;"><br>※사용자 폰트 설정 TIP<br>웹 폰트가 아니어도 사용자의 PC에 설치된 폰트도 적용할 수 있습니다.</dd>'
         + '<dt>사용자 설정 폰트<br>CSS URL</dt>'
           //사용자 설정 폰트 CSS
         + '<dd><input type="text" class="tf_profile _input _ksdark_cls" id="ksdark_font_css_url" style="background-color: ' + GM_getValue('ksDarkThemeStyle', '') + '; border: 0px; font-size: 13px; width: 316px; height: 16px; padding: 6px 8px;" value="' + GM_getValue('ksDarkCustomFontCss', '') + '"></dd>'
@@ -359,6 +368,8 @@ function addCustomFontSetting() {
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkHideLogo" value="true"> <label for="ksDarkHideLogo">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidelogo" class="inp_radio _friendListExposure" id="ksDarkNoHideLogo" value="false"> <label for="ksDarkNoHideLogo">숨기지 않기</label></div></div>※해당 기능을 사용하면 카카오스토리 로고가 삭제되고, 파비콘 및 타이틀이 네이버로 변경됩니다.</dd>'
         + '<dt>이미지 숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
+        + '<dt>흑역사 숨기기</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidehistory" class="inp_radio _friendListExposure" id="ksDarkHideHistory" value="true"> <label for="ksDarkHideHistory">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidehistory" class="inp_radio _friendListExposure" id="ksDarkNoHideHistory" value="false"> <label for="ksDarkNoHideHistory">숨기지 않기</label></div></div>※해당 기능을 사용하면 "과거의 오늘 있었던 추억들"이 보이지 않습니다.</dd>'
         + '<dt>동영상 다운로드</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadEnable" value="enable"> <label for="ksDarkDownloadEnable">활성화</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadDisable" value="disable"> <label for="ksDarkDownloadDisable">비활성화</label></div></div>※해당 기능을 사용하여 발생하는 책임은 사용자에게 있습니다.<br>다운로드 하신 영상은 국내 저작권법에 의거, 저작자의 동의가 없는 한 개인소장만 가능합니다.</dd>'
         + '<dt>친구 목록 백업</dt>'
@@ -366,8 +377,8 @@ function addCustomFontSetting() {
         + '<dt>부가 기능</dt>'
         + '<dd><div class="btn_area"><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important;" id="ksdarkDeleteAllFriend"><em>친구 전체 삭제</em></a><a href="#" class="btn_com btn_wh _changePasswd" style="background: #43b581 !important; display: none;" id="ksdarkDeleteAllArticles"><em>게시글 전체 삭제</em></a></div>※시작하면 되돌릴 수 없으며 도중 취소를 원하면 새로고침해야 합니다.</dd>'
         //다크테마 정보 보여주기
-        + '<dt>다크테마 정보</dt>'
-        + '<dd>버전: ' + versionString + '<br>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile" data-kant-id="516">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
+        + '<dt>KakaoStory Enhanced 정보</dt>'
+        + '<dd>Enhanced 버전: ' + versionString + '<br><div id="d_cssVersion">' + cssVersion + '</div>개발: <a href="/_jYmvy" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile" data-kant-id="516">Reflection</a>, <a href="/ldc6974" data-id="ldc6974" data-profile-popup="ldc6974" style="color: #00b5ff" class="_decoratedProfile">박종우</a><br>도움주신 분들: <a href="/_2ZQlS7" data-id="_2ZQlS7" data-profile-popup="_2ZQlS7" style="color: #00b5ff" class="_decoratedProfile">AppleWebKit</a>, 사일<br><a href="/_jYmvy/IJRIyFQOVWA" data-id="_jYmvy" data-profile-popup="_jYmvy" style="color: #00b5ff" class="_decoratedProfile">\' Enhanced 정보</a></dd>'
           //Apply
         + '</dl>'
         + '<div class="inp_footer"><div class="bn_group"><a href="#" class="_cancelBtn btn_com btn_wh" id="ksdarkCancel"><em>취소</em></a> <a class="btn_com btn_or" id="ksdarkApplyCustom"><em>저장</em></a></div><div id="ksdarkSaveInfo">일부 설정은 새로고침 해야 반영됩니다.</div></div>'
@@ -399,6 +410,12 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkSystemTheme").checked = true;
     } else {
         document.getElementById("ksDarkSystemTheme").checked = false;
+    }
+
+    if (GM_getValue('ksDarkHideHistory', '') == 'true') {
+        document.getElementById("ksDarkHideHistory").checked = true;
+    } else {
+        document.getElementById("ksDarkNoHideHistory").checked = true;
     }
 
     if (GM_getValue('ksDarkHideLogo', '') == "true") {
@@ -494,6 +511,10 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarkhidelogo"]',function(){
         GM_setValue("ksDarkHideLogo", $('[name="open_ksdarkhidelogo"]:checked').val());
+    });
+
+    $(document).on("change",'input[name="open_ksdarkhidehistory"]',function(){
+        GM_setValue("ksDarkHideHistory", $('[name="open_ksdarkhidehistory"]:checked').val());
     });
 
     $(document).on("change",'input[name="open_ksdarktellerkill"]',function(){
@@ -668,6 +689,19 @@ function setFontSize() {
     xmlHttp.send();
 }
 
+function getCSSVersion() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            cssVersion = xmlHttp.responseText;
+            document.getElementById('d_cssVersion').innerText = "CSS 업데이트 일자: " + cssVersion;
+        }
+    }
+    xmlHttp.open("GET", "https://raw.githubusercontent.com/reflection1921/KakaoStory-DarkTheme/master/css_version");
+    xmlHttp.send();
+
+}
+
 function viewUpdate() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
@@ -785,7 +819,8 @@ $(document).ready(function(){
         document.getElementById("banStringLayer").remove();
     });
 
-     $('body').on('keydown', '#contents_write', function() {
+    //글쓰기 버그 수정용
+    $('body').on('keydown', '#contents_write', function() {
         //console.log(document.getElementById("contents_write").innerText);
         var str = document.getElementById("contents_write").innerText;
          if (str.charAt(str.length - 1) != "\n") {
@@ -999,6 +1034,7 @@ function addDownloadVideo() {
     getBanUsers();
     loadEnhancedCSS();
     addCustomFontSetting();
+    getCSSVersion();
     createBanStringArr();
     //업데이트 내역 표시
     if (GM_getValue("ksDarkVersion", '') !== versionString) {
@@ -1049,6 +1085,10 @@ function addDownloadVideo() {
 
         if (GM_getValue('ksDarkDownloadVideo', '') == 'enable') {
             addDownloadVideo();
+        }
+
+        if (GM_getValue('ksDarkHideHistory', 'false') == 'true') {
+            hideOldHistory();
         }
 
         //addTextNewLine();
