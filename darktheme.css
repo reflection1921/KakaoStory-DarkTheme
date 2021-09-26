@@ -414,6 +414,7 @@ body { color: var(--text-color) !important; }
 .music_collection .txt_artist { color: var(--text-color) !important; }
 .music_collection .link_music { color: var(--text-highlight-color) !important; }
 .story_desc .link_empathy { color: var(--info-text-color) !important; }
+.story_desc .txt_nodata { color: var(--text-color) !important; }
 .frinfo_wrap .list_frinfo .btn_group .info_meun { border-left: 1px solid var(--discord-blue) !important; }
 .story_widgets .section_widgets { background-color: var(--light-background-color) !important; }
 .story_widgets .section_widgets { border-bottom: 0px !important; }
