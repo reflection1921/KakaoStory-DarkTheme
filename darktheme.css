@@ -702,3 +702,10 @@ body { color: var(--text-color) !important; }
 .section_birth .link_name { color: var(--text-color) !important; }
 .section_birth .tit_birth { color: var(--text-highlight-color) !important; }
 .section_birth .box_birth { color: var(--background-border-color) !important; }
+.__tablet__ .tit_show, .desktop_s .tit_show { color: var(--text-highlight-color) !important; }
+.__tablet__ .mystory_menu .layer_mystory .tit_show, .desktop_s .mystory_menu .layer_mystory .tit_show { border-bottom: 1px solid var(--background-border-color) !important; }
+.__tablet__ .mystory_menu .layer_mystory, .desktop_s .mystory_menu .layer_mystory {border-left: 1px solid var(--light-background-color) !important; }
+.__tablet__ .snb_tabcont .tit_show, .desktop_s .snb_tabcont .tit_show { border-bottom: 1px solid var(--background-border-color) !important; }
+.__tablet__ .snb_tabcont, .desktop_s .snb_tabcont { border-left: 1px solid var(--light-background-color) !important; }
+.layer_story .inner_story_layer { background: var(--light-background-color) !important; }
+.layer_story .inner_story_layer .tit_storylayer { border-bottom: 1px solid var(--background-border-color) !important; }
