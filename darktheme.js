@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KakaoStory Enhanced
 // @namespace    http://chihaya.kr
-// @version      0.36
+// @version      0.37
 // @description  Add useful features in KakaoStory
 // @author       Reflection, 박종우
 // @match        https://story.kakao.com/*
@@ -31,6 +31,8 @@
    ksDarkMention : 디코스타일 멘션 쓸거냐?
    ksDarkDownloadVideo : 동영상 다운로드 버튼 활성화 여부
    ksDarkHideHistory : 흑역사(과거추억) 안보이기
+   ksDarkBypassCap : 무엇인가를 우회
+   ksDarkSticonSize : 스티콘(이모티콘) 크기
 */
 
 let currentPage = '';
@@ -38,7 +40,7 @@ let unlockBannedString = false;
 let notyTimeCount = 0;
 let banList = new Set();
 let banStringArr = new Array();
-let versionString = '0.36(210927)';
+let versionString = '0.37(211105)';
 let cssVersion = 'CSS 업데이트 일자: ';
 let myID = '';
 let konami = [38,38,40,40,37,39,37,39,66,65];
@@ -370,6 +372,10 @@ function addCustomFontSetting() {
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkHideImage" value="hide"> <label for="ksDarkHideImage">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhideimage" class="inp_radio _friendListExposure" id="ksDarkVisibleImage" value="view"> <label for="ksDarkVisibleImage">숨기지 않기</label></div></div>※해당 기능을 사용하면 이미지가 블러처리 되어 보이지 않습니다.</dd>'
         + '<dt>흑역사 숨기기</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkhidehistory" class="inp_radio _friendListExposure" id="ksDarkHideHistory" value="true"> <label for="ksDarkHideHistory">숨기기</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkhidehistory" class="inp_radio _friendListExposure" id="ksDarkNoHideHistory" value="false"> <label for="ksDarkNoHideHistory">숨기지 않기</label></div></div>※해당 기능을 사용하면 "과거의 오늘 있었던 추억들"이 보이지 않습니다.</dd>'
+        + '<dt>이모티콘 크기</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarksticonsize" class="inp_radio _friendListExposure" id="ksDarkSticonSmall" value="small"> <label for="ksDarkSticonSmall">소(64px/84px)</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarksticonsize" class="inp_radio _friendListExposure" id="ksDarkSticonMiddle" value="middle"> <label for="ksDarkSticonMiddle">중(96px)</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarksticonsize" class="inp_radio _friendListExposure" id="ksDarkSticonBig" value="big"> <label for="ksDarkSticonBig">대(128px)</label></div></div>※소(64px/84px) 크기는 카카오스토리 기본 크기이며, 댓글과 글 내의 이모티콘 크기가 각각 다르게 표시됩니다.</dd>'
+        + '<dt>준비중</dt>'
+        + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkbypasscap" class="inp_radio _friendListExposure" id="ksDarkBypassCap" value="true"> <label for="ksDarkBypassCap">준비중(Enable)</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkbypasscap" class="inp_radio _friendListExposure" id="ksDarkNoBypassCap" value="false"> <label for="ksDarkNoBypassCap">준비중(Disable)</label></div></div>※해당 기능을 사용하면 가끔씩 표시되는 무엇인가가 보이지 않습니다.<br>해당 기능은 실험적인 기능이며, 해당 기능으로 인해 발생하는 문제에 대해서 책임지지 않습니다.</dd>'
         + '<dt>동영상 다운로드</dt>'
         + '<dd><div class="option_msg"><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadEnable" value="enable"> <label for="ksDarkDownloadEnable">활성화</label></div><div class="radio_inp"> <input type="radio" name="open_ksdarkdownloadvideo" class="inp_radio _friendListExposure" id="ksDarkDownloadDisable" value="disable"> <label for="ksDarkDownloadDisable">비활성화</label></div></div>※해당 기능을 사용하여 발생하는 책임은 사용자에게 있습니다.<br>다운로드 하신 영상은 국내 저작권법에 의거, 저작자의 동의가 없는 한 개인소장만 가능합니다.</dd>'
         + '<dt>친구 목록 백업</dt>'
@@ -398,6 +404,14 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkTypeBlue").checked = true;
     } else {
         document.getElementById("ksDarkTypeDiscord").checked = true;
+    }
+
+    if (GM_getValue('ksDarkSticonSize', '') == "small") {
+        document.getElementById("ksDarkSticonSmall").checked = true;
+    } else if (GM_getValue('ksDarkSticonSize', '') == "middle") {
+        document.getElementById("ksDarkSticonMiddle").checked = true;
+    } else {
+        document.getElementById("ksDarkSticonBig").checked = true;
     }
 
     if (GM_getValue('ksDarkThemeStyle', '') == "#40444b") {
@@ -452,6 +466,12 @@ function addCustomFontSetting() {
         document.getElementById("ksDarkBan").checked = true;
     } else {
         document.getElementById("ksDarkNoBan").checked = true;
+    }
+
+    if (GM_getValue('ksDarkBypassCap', '') == "true") {
+        document.getElementById("ksDarkBypassCap").checked = true;
+    } else {
+        document.getElementById("ksDarkNoBypassCap").checked = true;
     }
 
     if (GM_getValue('ksDarkImageView', '') == "nothing") {
@@ -544,6 +564,11 @@ function addCustomFontSetting() {
 
     $(document).on("change",'input[name="open_ksdarkdownloadvideo"]',function(){
         GM_setValue("ksDarkDownloadVideo", $('[name="open_ksdarkdownloadvideo"]:checked').val());
+    });
+
+    $(document).on("change",'input[name="open_ksdarksticonsize"]',function(){
+        GM_setValue("ksDarkSticonSize", $('[name="open_ksdarksticonsize"]:checked').val());
+        setSticonSize();
     });
 
     $('body').on('click', '#ksdarkBackupFriend', function() {
@@ -874,6 +899,24 @@ function addEnhancedMenu() {
     });
 }
 
+function setSticonSize()
+{
+    var sSize = loadValue("ksDarkSticonSize", '');
+    if (sSize == "small")
+    {
+        GM_addStyle('.comment .comt_write .inp_write .inp_graphic .kakao_emoticon, .comment .list>li .txt .emoticon .kakao_emoticon { width: 64px !important; height: 64px !important; }');
+        GM_addStyle('.fd_cont .txt_wrap .kakao_emoticon { width: 84px !important; height: 84px !important; }');
+    } else if (sSize == "middle")
+    {
+        GM_addStyle('.comment .comt_write .inp_write .inp_graphic .kakao_emoticon, .comment .list>li .txt .emoticon .kakao_emoticon { width: 96px !important; height: 96px !important; }');
+        GM_addStyle('.fd_cont .txt_wrap .kakao_emoticon { width: 96px !important; height: 96px !important; }');
+    } else
+    {
+        GM_addStyle('.comment .comt_write .inp_write .inp_graphic .kakao_emoticon, .comment .list>li .txt .emoticon .kakao_emoticon { width: 128px !important; height: 128px !important; }');
+        GM_addStyle('.fd_cont .txt_wrap .kakao_emoticon { width: 128px !important; height: 128px !important; }');
+    }
+}
+
 function enableScroll() {
     window.onscroll = function() {};
 }
@@ -921,6 +964,13 @@ function loadSettingsV2() {
     GM_addStyle('.head_story .tit_kakaostory .logo_kakaostory { width: 0px !important; }');
     GM_addStyle('.head_story .tit_kakaostory .link_kakaostory { height: 27px !important; }');
     GM_addStyle('._ksdark_cls { background-color: ' + loadValue('ksDarkThemeStyle', '#40444b')+ ' !important; }');
+}
+
+function bypassCap() {
+    document.body.removeEventListener('click', getEventListeners(document.body).click[0].listener, {capture: !0});
+    //~.click[int형 배열값].listener.name 여기에 _stopPropagation 이게 있으면 remove 시키도록 구현
+    //페이지 이동할때마다 해줘야하는걸로 알고 있음
+    //그리고 캡챠 관련 문자열이 element로 표시되면 그거도 삭제하도록 구현
 }
 
 function getMyID() {
@@ -1014,6 +1064,8 @@ function addDownloadVideo() {
     loadValue('ksDarkThemeStyleSystem', 'true');
     loadValue('ksDarkMention', 'false');
     loadValue('ksDarkDownloadVideo', 'disable');
+    loadValue('ksDarkBypassCap', 'false');
+    loadValue('ksDarkSticonSize', 'small');
 
     if (loadValue('ksDarkThemeStyleSystem', 'false') == 'true') {
         GM_setValue('ksDarkThemeStyle', isSystemDark());
@@ -1036,6 +1088,7 @@ function addDownloadVideo() {
     addCustomFontSetting();
     getCSSVersion();
     createBanStringArr();
+    setSticonSize();
     //업데이트 내역 표시
     if (GM_getValue("ksDarkVersion", '') !== versionString) {
         viewUpdate();
@@ -1089,6 +1142,10 @@ function addDownloadVideo() {
 
         if (GM_getValue('ksDarkHideHistory', 'false') == 'true') {
             hideOldHistory();
+        }
+
+        if (GM_getValue('ksDarkBypassCap', 'false') == 'true') {
+            bypassCap();
         }
 
         //addTextNewLine();
